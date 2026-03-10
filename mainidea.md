@@ -1,0 +1,4 @@
+SYSTEM KTORY .....
+
+
+CO  NAPISAC???
