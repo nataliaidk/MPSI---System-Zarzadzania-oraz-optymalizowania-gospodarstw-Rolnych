@@ -242,8 +242,6 @@ Systemy obejmują:
 
 #### JDLink
 
-https://www.deere.pl/pl-pl/produkty-rozwiazania/rozwiazania-technologiczne/rozwiazania-dla-rolnictwa-precyzyjnego/modem-m-jdlink-technologia-rolnictwa-precyzyjnego-odi1qlo
-
 Zapewnia:
 
 - dwukierunkową łączność z maszynami
@@ -391,8 +389,8 @@ od dystrybutorów poprzez **integrację API**.
 
 Jako **Właściciel** chcę otrzymywać rekomendacje koszyka zakupowego, np.:
 
-Kup nawóz X u dystrybutora Y  
-Kup środek Z u dystrybutora W
+- Kup nawóz X u dystrybutora Y  
+- Kup środek Z u dystrybutora W
 
 aby zminimalizować całkowity koszt zaopatrzenia.
 
@@ -419,6 +417,70 @@ aby maksymalizować zysk.
 
 ### US 4.1
 
-Jako **Właściciel** chcę widzieć **dashboard zarządczy** pokazujący:
+Jako **Właściciel** chcę widzieć **dashboard zarządczy** pokazujący zysk z każdego hektara (przychód z plonów minus koszty nasion, chemii, paliwa i czasu pracy), aby ocenić rentowność i podejmować mądre decyzje o ewentualnym zwiększeniu powierzchni gospodarstwa.
 
-zysk z każdego hektara:
+---
+
+# Epik 5 – Zarządzanie Magazynem i Plonami (Silosy)
+
+### US 5.1
+
+Jako **Właściciel/Zarządca** chcę monitorować w czasie rzeczywistym poziom zapełnienia poszczególnych silosów wraz z informacją o:
+- rodzaju zmagazynowanego plonu
+- jego parametrach (np. wilgotności)
+
+aby precyzyjnie zarządzać dostępną przestrzenią magazynową.
+
+---
+
+### US 5.2
+
+Jako **Operator** (np. traktorzysta) chcę móc w aplikacji mobilnej "zrzucać" zebrany plon na wirtualny magazyn z przypisaniem do konkretnego silosu, aby zautomatyzować ewidencję zbiorów bez papierowych kwitów.
+
+---
+
+# Epik 6 – Moduł HR, Harmonogramy i Komunikacja
+
+### US 6.1
+
+Jako **Pracownik** chcę mieć dostęp do mojego aktualnego grafiku w aplikacji mobilnej, aby wiedzieć, w jakich dniach i przy jakich zadaniach jestem zaplanowany do pracy.
+
+---
+
+### US 6.2
+
+Jako **Zarządca** chcę móc masowo modyfikować zadania w grafiku oraz wysyłać powiadomienia "push" do zespołu (np. „Z powodu deszczu wstrzymujemy siew”), aby dynamicznie reagować na warunki pogodowe.
+
+---
+
+### US 6.3
+
+Jako **Członek Zespołu** chcę korzystać z wbudowanego bezpiecznego komunikatora (czaty prywatne oraz grupowe, np. dla konkretnej maszyny), aby szybko zgłaszać awarie i wymieniać informacje.
+
+---
+
+### US 6.4
+
+Jako **Właściciel/Zarządca** chcę, aby system automatycznie zliczał przepracowane godziny każdego pracownika na podstawie zatwierdzonych zadań w aplikacji, aby szybko generować raporty do wypłat.
+
+---
+
+# 6. Wymagania niefunkcjonalne i techniczne
+
+### 6.1. Niezawodność i działanie Offline (Kluczowe)
+- **Tryb Offline:** Aplikacja mobilna musi w pełni obsługiwać pracę bez dostępu do Internetu. Synchronizacja danych z chmurą musi następować w tle po odzyskaniu zasięgu.
+
+### 6.2. Użyteczność i Ergonomia (UX/UI)
+- **Interfejs terenowy:** Wymagane są duże przyciski (obsługa w rękawicach roboczych) oraz tryb wysokiego kontrastu (czytelność w ostrym słońcu).
+- **Prostota obsługi:** Interfejs musi być maksymalnie uproszczony i oparty na czytelnych ikonach.
+
+### 6.3. Bezpieczeństwo i Prywatność Danych
+- **Ochrona danych:** Dane wrażliwe (plonowanie, finanse, mapy zmienności glebowej) muszą być szyfrowane.
+- **Kopie zapasowe:** Wymagane są zautomatyzowane, codzienne backupy całej bazy danych w chmurze.
+- **Zgodność z RODO:** System musi bezpiecznie przetwarzać dane osobowe i pracownicze.
+
+### 6.4. Wydajność
+- **Szybkość renderowania map:** System musi płynnie ładować i renderować ciężkie warstwy danych przestrzennych (satelity, NDVI) dla całego obszaru 500 hektarów.
+
+### 6.5. Kompatybilność i Integracja
+- **Standardy agro:** Aplikacja musi bezproblemowo importować/eksportować dane w standardach rolnictwa precyzyjnego (np. ISO-XML dla ISOBUS, Shapefile/GeoJSON dla map).
