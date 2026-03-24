@@ -5,197 +5,483 @@
   </bpmn:collaboration>
   <bpmn:process id="Process_Controlling" isExecutable="false">
     <bpmn:laneSet id="LaneSet_1">
-      <bpmn:lane id="Lane_System" name="System (FMIS)">
-        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_1</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_2</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_3</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_6</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_7</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>EndEvent_2</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>EndEvent_3</bpmn:flowNodeRef>
+      <bpmn:lane id="Lane_External" name="Zarządzanie Ryzykiem / Eskalacja">
+        <bpmn:flowNodeRef>IntermediateEvent_Disaster</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AdjustBaseline</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AssessImpact</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_Owner" name="Właściciel">
-        <bpmn:flowNodeRef>Task_4</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_1</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_5</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>EndEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AnalyzeResults</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ForceFlag</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_FlagForce</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Strategy</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Expansion</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Expansion</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_System" name="System (FMIS)">
+        <bpmn:flowNodeRef>EndEvent_Rotation</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_InitNewSeason</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RecalcPlan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Season</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_DataComplete</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CheckData</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RequestData</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_UpdateDashboard</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CalcProfitability</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AggregateCosts</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:startEvent id="StartEvent_1" name="Dane z sezonu gotowe do analizy">
-      <bpmn:outgoing>Flow_1</bpmn:outgoing>
-    </bpmn:startEvent>
-    <bpmn:task id="Task_1" name="Agregacja kosztów (nasiona, chemia, paliwo, robocizna)">
-      <bpmn:incoming>Flow_1</bpmn:incoming>
-      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    <bpmn:intermediateCatchEvent id="IntermediateEvent_Disaster" name="Zgłoszenie zdarzenia losowego / kataklizmu (susza, powódź, grad, szkodniki masowe)">
+      <bpmn:documentation>
+        Zdarzenie wyzwalane manualnie przez Właściciela lub automatycznie (np. alert pogodowy z API).
+        Obejmuje: suszę, powódź, grad, przymrozki, masowe wystąpienie szkodników, choroby upraw.
+        Zdarzenia te zniekształcają wyniki rentowności — konieczna jest korekta bazowa
+        przed analizą strategiczną, aby nie podejmować błędnych decyzji na podstawie
+        danych niereprezentujących normalnych warunków prowadzenia gospodarstwa.
+      </bpmn:documentation>
+      <bpmn:outgoing>Flow_Disaster_Assess</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MED_Disaster" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="EndEvent_Rotation" name="System gotowy na nowy płodozmian — powrót do planowania sezonu">
+      <bpmn:incoming>Flow_Recalc_End</bpmn:incoming>
+      <bpmn:terminateEventDefinition id="TED_Rotation" />
+    </bpmn:endEvent>
+    <bpmn:task id="Task_InitNewSeason" name="Inicjalizacja nowego sezonu z zachowaniem bieżącej struktury upraw">
+      <bpmn:documentation>
+        System FMIS kopiuje strukturę upraw, normy aplikacyjne i budżety z poprzedniego sezonu.
+        Tworzy nowe konta kosztowe dla kolejnego sezonu.
+        Właściciel potwierdza gotowość do planowania operacyjnego.
+        Wejście: zatwierdzona decyzja Status Quo.
+        Wyjście: nowy sezon zainicjalizowany w systemie — aktywny arkusz planowania.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Strategy_StatusQuo</bpmn:incoming>
+      <bpmn:outgoing>Flow_Init_End</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Task_2" name="Kalkulacja rentowności upraw (przychody vs koszty)">
-      <bpmn:incoming>Flow_2</bpmn:incoming>
-      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    <bpmn:task id="Task_RecalcPlan" name="Przeliczenie nowego planu zasiewów i map aplikacyjnych (optymalizacja płodozmianu)">
+      <bpmn:documentation>
+        System FMIS na podstawie danych rentowności generuje propozycję nowego płodozmianu.
+        Uwzględnia: rotację upraw, wymagania glebowe, dostępność maszyn, ceny rynkowe.
+        Właściciel zatwierdza lub modyfikuje propozycję.
+        Wejście: wyniki rentowności per uprawa + dane agrotechniczne pól.
+        Wyjście: zatwierdzony plan zasiewów na kolejny sezon + zaktualizowane mapy aplikacyjne.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Strategy_Restructure</bpmn:incoming>
+      <bpmn:outgoing>Flow_Recalc_End</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Task_3" name="Aktualizacja zintegrowanego dashboardu">
-      <bpmn:incoming>Flow_3</bpmn:incoming>
-      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    <bpmn:endEvent id="EndEvent_Season" name="System gotowy na kolejny sezon — powrót do planowania operacyjnego">
+      <bpmn:incoming>Flow_Init_End</bpmn:incoming>
+      <bpmn:terminateEventDefinition id="TED_Season" />
+    </bpmn:endEvent>
+    <bpmn:task id="Task_AdjustBaseline" name="Korekta wyników o wpływ zdarzeń losowych (normalizacja danych)">
+      <bpmn:documentation>
+        Wyniki sezonu są korygowane o stwierdzone straty losowe, tak by dashboard
+        i analiza strategiczna odzwierciedlały rzeczywisty potencjał gospodarstwa,
+        a nie skutki siły wyższej.
+        Wejście: raport korekty + oryginalny raport rentowności.
+        Wyjście: znormalizowany raport rentowności z adnotacją o zastosowanej korekcie.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Assess_Adjust</bpmn:incoming>
+      <bpmn:outgoing>Flow_AdjustedBaseline_Dashboard</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Task_4" name="Analiza wyników strategicznych (zysk per hektar)">
-      <bpmn:incoming>Flow_4</bpmn:incoming>
-      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    <bpmn:task id="Task_AssessImpact" name="Ocena wpływu zdarzenia losowego na wyniki sezonu">
+      <bpmn:documentation>
+        Zespół ds. zarządzania ryzykiem (lub zewnętrzny rzeczoznawca / ubezpieczyciel)
+        szacuje straty spowodowane zdarzeniem losowym.
+        Wejście: raport szkód, dokumentacja fotograficzna, dane plonów z dotkniętych pól.
+        Wyjście: raport korekty — kwota strat, których przyczyna leży poza kontrolą gospodarstwa.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Disaster_Assess</bpmn:incoming>
+      <bpmn:outgoing>Flow_Assess_Adjust</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:exclusiveGateway id="Gateway_1" name="Decyzja o strategii rozwoju">
-      <bpmn:incoming>Flow_5</bpmn:incoming>
-      <bpmn:outgoing>Flow_6</bpmn:outgoing>
-      <bpmn:outgoing>Flow_7</bpmn:outgoing>
-      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    <bpmn:task id="Task_AnalyzeResults" name="Analiza wyników strategicznych (zysk per hektar, trendy, benchmarki)">
+      <bpmn:documentation>
+        Właściciel analizuje zaktualizowany dashboard.
+        Ocenia: które uprawy były rentowne, które należy zmienić lub wyeliminować,
+        jaki jest trend wieloletni, jak wyniki plasują się na tle benchmarków regionalnych.
+        Wejście: zaktualizowany dashboard rentowności.
+        Wyjście: wnioski strategiczne — decyzja o kierunku rozwoju.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Dashboard_Analyze</bpmn:incoming>
+      <bpmn:outgoing>Flow_Analyze_ForceFlag</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_ForceFlag" name="Czy wyniki zawierają korektę za siłę wyższą?">
+      <bpmn:documentation>
+        Jeśli dashboard zawiera korektę za zdarzenia losowe, Właściciel jest o tym
+        wyraźnie informowany przed podjęciem decyzji strategicznej.
+        Cel: świadome uwzględnienie niepewności przy planowaniu.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Analyze_ForceFlag</bpmn:incoming>
+      <bpmn:outgoing>Flow_ForceFlag_Note</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ForceFlag_Skip</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="Task_5" name="Działania poza systemem (np. dzierżawa gruntów)">
-      <bpmn:incoming>Flow_6</bpmn:incoming>
-      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+    <bpmn:task id="Task_FlagForce" name="Oznaczenie decyzji strategicznej jako podjętej w warunkach niepewności (rok anomalny)">
+      <bpmn:documentation>
+        Właściciel potwierdza, że jest świadomy anomalnego charakteru sezonu.
+        Decyzja strategiczna jest archiwizowana z flagą „rok anomalny",
+        co umożliwia retrospektywną ocenę jej trafności w normalnych warunkach.
+        Wejście: adnotacja o korekcie za siłę wyższą.
+        Wyjście: potwierdzona decyzja z flagą niepewności.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_ForceFlag_Note</bpmn:incoming>
+      <bpmn:outgoing>Flow_Flag_Strategy</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Task_6" name="Przeliczenie nowego planu zasiewów i map aplikacyjnych">
-      <bpmn:incoming>Flow_7</bpmn:incoming>
-      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+    <bpmn:exclusiveGateway id="Gateway_Strategy" name="Decyzja o strategii rozwoju gospodarstwa">
+      <bpmn:documentation>
+        Bramka ekskluzywna — dokładnie jedna ścieżka jest wybierana.
+
+        EKSPANSJA: Wyniki znacząco przekraczają oczekiwania, wolne środki finansowe
+        lub dostępność gruntów umożliwiają wzrost skali. Właściciel widzi przewagę
+        konkurencyjną wartą inwestycji.
+
+        ZMIANA STRUKTURY UPRAW: Rentowność poszczególnych upraw jest nierównomiernie
+        rozłożona. Konieczna reorganizacja płodozmianu — eliminacja upraw nierentownych,
+        zwiększenie udziału upraw zyskownych lub wdrożenie nowych gatunków.
+
+        STATUS QUO: Wyniki są zadowalające i stabilne, brak sygnałów do zmian strukturalnych.
+        Kolejny sezon planowany jest na bazie aktualnej struktury.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_ForceFlag_Skip</bpmn:incoming>
+      <bpmn:incoming>Flow_Flag_Strategy</bpmn:incoming>
+      <bpmn:outgoing>Flow_Strategy_Expansion</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Strategy_Restructure</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Strategy_StatusQuo</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_Expansion" name="Inicjacja działań ekspansji (dzierżawa gruntów, zakup maszyn, poszukiwanie partnerów)">
+      <bpmn:documentation>
+        Właściciel wraz z doradcą prawnym/finansowym inicjuje działania ekspansji.
+        Obejmuje: poszukiwanie gruntów do dzierżawy lub zakupu, negocjacje z sąsiadami,
+        analizę finansowania zewnętrznego (dotacje, kredyty), zakup lub leasing maszyn.
+        Wejście: decyzja o ekspansji + analiza zdolności finansowej.
+        Wyjście: plan ekspansji z harmonogramem i budżetem.
+        UWAGA: Działania realizowane są poza systemem FMIS — wyniki wracają do
+        systemu jako nowe pola/maszyny w kolejnym sezonie.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Strategy_Expansion</bpmn:incoming>
+      <bpmn:outgoing>Flow_Expansion_End</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Task_7" name="Inicjalizacja nowego sezonu z zachowaniem obecnych danych">
-      <bpmn:incoming>Flow_8</bpmn:incoming>
-      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+    <bpmn:endEvent id="EndEvent_Expansion" name="Proces ekspansji rozpoczęty — nowe zasoby rejestrowane w systemie przed kolejnym sezonem">
+      <bpmn:incoming>Flow_Expansion_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_DataComplete" name="Czy dane są kompletne?">
+      <bpmn:incoming>Flow_Check_Gateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_DataOK</bpmn:outgoing>
+      <bpmn:outgoing>Flow_DataMissing</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_CheckData" name="Weryfikacja kompletności danych sezonowych">
+      <bpmn:documentation>
+        System FMIS sprawdza, czy wszystkie wymagane wpisy kosztowe zostały zatwierdzone:
+        nasiona, środki chemiczne, paliwo, robocizna, amortyzacja maszyn.
+        Wejście: raporty z modułów zakupów, kadrowego i magazynowego.
+        Wyjście: raport kompletności danych [COMPLETE / INCOMPLETE].
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Start_Check</bpmn:incoming>
+      <bpmn:outgoing>Flow_Check_Gateway</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:endEvent id="EndEvent_1" name="Proces ekspansji rozpoczęty">
-      <bpmn:incoming>Flow_9</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:endEvent id="EndEvent_2" name="System gotowy na nowy płodozmian">
-      <bpmn:incoming>Flow_10</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:endEvent id="EndEvent_3" name="System gotowy na kolejny sezon">
-      <bpmn:incoming>Flow_11</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_1" />
-    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_1" targetRef="Task_2" />
-    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_2" targetRef="Task_3" />
-    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_3" targetRef="Task_4" />
-    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_4" targetRef="Gateway_1" />
-    <bpmn:sequenceFlow id="Flow_6" name="Ekspansja" sourceRef="Gateway_1" targetRef="Task_5" />
-    <bpmn:sequenceFlow id="Flow_7" name="Zmiana struktury" sourceRef="Gateway_1" targetRef="Task_6" />
-    <bpmn:sequenceFlow id="Flow_8" name="Status Quo" sourceRef="Gateway_1" targetRef="Task_7" />
-    <bpmn:sequenceFlow id="Flow_9" sourceRef="Task_5" targetRef="EndEvent_1" />
-    <bpmn:sequenceFlow id="Flow_10" sourceRef="Task_6" targetRef="EndEvent_2" />
-    <bpmn:sequenceFlow id="Flow_11" sourceRef="Task_7" targetRef="EndEvent_3" />
+    <bpmn:startEvent id="StartEvent_1" name="Zakończenie sezonu — dane gotowe do analizy">
+      <bpmn:outgoing>Flow_Start_Check</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_RequestData" name="Żądanie uzupełnienia brakujących danych od odpowiedzialnych działów">
+      <bpmn:documentation>
+        System generuje automatyczne powiadomienia do działów odpowiedzialnych za brakujące wpisy.
+        Proces czeka na uzupełnienie — maksymalny czas oczekiwania: 5 dni roboczych.
+        Po uzupełnieniu powrót do weryfikacji.
+        Wejście: raport brakujących wpisów.
+        Wyjście: potwierdzenie uzupełnienia danych.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_DataMissing</bpmn:incoming>
+      <bpmn:outgoing>Flow_Retry_Check</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_UpdateDashboard" name="Aktualizacja zintegrowanego dashboardu rentowności">
+      <bpmn:documentation>
+        System aktualizuje dashboard agregując dane bieżącego sezonu z danymi historycznymi.
+        Generuje automatyczne porównanie rok-do-roku oraz porównanie z benchmarkami branżowymi.
+        Wejście: raport rentowności bieżącego sezonu.
+        Wyjście: zaktualizowany dashboard z wizualizacją trendów [dostępny dla Właściciela].
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Calc_Dashboard</bpmn:incoming>
+      <bpmn:incoming>Flow_AdjustedBaseline_Dashboard</bpmn:incoming>
+      <bpmn:outgoing>Flow_Dashboard_Analyze</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_CalcProfitability" name="Kalkulacja rentowności upraw (przychody vs koszty)">
+      <bpmn:documentation>
+        System zestawia przychody ze sprzedaży plonów z zagregowanymi kosztami.
+        Oblicza marżę brutto per uprawa i per pole.
+        Wejście: zestawienie kosztów + faktury sprzedaży plonów.
+        Wyjście: raport rentowności [marża brutto zł/ha, zysk/strata per uprawa].
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Agg_Calc</bpmn:incoming>
+      <bpmn:outgoing>Flow_Calc_Dashboard</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_AggregateCosts" name="Agregacja kosztów produkcji">
+      <bpmn:documentation>
+        System FMIS agreguje wszystkie koszty sezonowe z podziałem na kategorie:
+        nasiona, środki ochrony roślin, nawozy, paliwo, robocizna, dzierżawa, amortyzacja.
+        Wejście: zatwierdzone dokumenty kosztowe z całego sezonu.
+        Wyjście: zestawienie kosztów per uprawa, per pole, per kategoria [zł/ha, zł/t].
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_DataOK</bpmn:incoming>
+      <bpmn:outgoing>Flow_Agg_Calc</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_Disaster_Assess" sourceRef="IntermediateEvent_Disaster" targetRef="Task_AssessImpact" />
+    <bpmn:sequenceFlow id="Flow_Recalc_End" sourceRef="Task_RecalcPlan" targetRef="EndEvent_Rotation" />
+    <bpmn:sequenceFlow id="Flow_Strategy_StatusQuo" name="Status quo — wyniki stabilne i zadowalające" sourceRef="Gateway_Strategy" targetRef="Task_InitNewSeason" />
+    <bpmn:sequenceFlow id="Flow_Init_End" sourceRef="Task_InitNewSeason" targetRef="EndEvent_Season" />
+    <bpmn:sequenceFlow id="Flow_Strategy_Restructure" name="Zmiana struktury — nierównomierny rozkład rentowności upraw" sourceRef="Gateway_Strategy" targetRef="Task_RecalcPlan" />
+    <bpmn:sequenceFlow id="Flow_Assess_Adjust" sourceRef="Task_AssessImpact" targetRef="Task_AdjustBaseline" />
+    <bpmn:sequenceFlow id="Flow_AdjustedBaseline_Dashboard" name="Znormalizowane dane" sourceRef="Task_AdjustBaseline" targetRef="Task_UpdateDashboard" />
+    <bpmn:sequenceFlow id="Flow_Dashboard_Analyze" sourceRef="Task_UpdateDashboard" targetRef="Task_AnalyzeResults" />
+    <bpmn:sequenceFlow id="Flow_Analyze_ForceFlag" sourceRef="Task_AnalyzeResults" targetRef="Gateway_ForceFlag" />
+    <bpmn:sequenceFlow id="Flow_ForceFlag_Note" name="Tak — rok anomalny" sourceRef="Gateway_ForceFlag" targetRef="Task_FlagForce" />
+    <bpmn:sequenceFlow id="Flow_ForceFlag_Skip" name="Nie — normalny sezon" sourceRef="Gateway_ForceFlag" targetRef="Gateway_Strategy" />
+    <bpmn:sequenceFlow id="Flow_Flag_Strategy" sourceRef="Task_FlagForce" targetRef="Gateway_Strategy" />
+    <bpmn:sequenceFlow id="Flow_Strategy_Expansion" name="Ekspansja — wyniki ponadprzeciętne, dostępne zasoby do wzrostu" sourceRef="Gateway_Strategy" targetRef="Task_Expansion" />
+    <bpmn:sequenceFlow id="Flow_Expansion_End" sourceRef="Task_Expansion" targetRef="EndEvent_Expansion" />
+    <bpmn:sequenceFlow id="Flow_Check_Gateway" sourceRef="Task_CheckData" targetRef="Gateway_DataComplete" />
+    <bpmn:sequenceFlow id="Flow_DataOK" name="Dane kompletne" sourceRef="Gateway_DataComplete" targetRef="Task_AggregateCosts" />
+    <bpmn:sequenceFlow id="Flow_DataMissing" name="Braki danych" sourceRef="Gateway_DataComplete" targetRef="Task_RequestData" />
+    <bpmn:sequenceFlow id="Flow_Start_Check" sourceRef="StartEvent_1" targetRef="Task_CheckData" />
+    <bpmn:sequenceFlow id="Flow_Retry_Check" name="Dane uzupełnione — ponów weryfikację" sourceRef="Task_RequestData" targetRef="Task_CheckData" />
+    <bpmn:sequenceFlow id="Flow_Calc_Dashboard" sourceRef="Task_CalcProfitability" targetRef="Task_UpdateDashboard" />
+    <bpmn:sequenceFlow id="Flow_Agg_Calc" sourceRef="Task_AggregateCosts" targetRef="Task_CalcProfitability" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1">
       <bpmndi:BPMNShape id="Participant_1_di" bpmnElement="Participant_1" isHorizontal="true">
-        <dc:Bounds x="150" y="80" width="1050" height="400" />
+        <dc:Bounds x="160" y="60" width="2300" height="760" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_External_di" bpmnElement="Lane_External" isHorizontal="true">
+        <dc:Bounds x="190" y="540" width="2270" height="240" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_Owner_di" bpmnElement="Lane_Owner" isHorizontal="true">
-        <dc:Bounds x="180" y="280" width="1020" height="200" />
+        <dc:Bounds x="190" y="300" width="2270" height="240" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_System_di" bpmnElement="Lane_System" isHorizontal="true">
-        <dc:Bounds x="180" y="80" width="1020" height="200" />
+        <dc:Bounds x="190" y="60" width="2270" height="240" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateEvent_Disaster_di" bpmnElement="IntermediateEvent_Disaster">
+        <dc:Bounds x="912" y="642" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="890" y="685" width="80" height="93" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Rotation_di" bpmnElement="EndEvent_Rotation">
+        <dc:Bounds x="1960" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1941" y="205" width="75" height="80" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_InitNewSeason_di" bpmnElement="Task_InitNewSeason">
+        <dc:Bounds x="1760" y="240" width="140" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_RecalcPlan_di" bpmnElement="Task_RecalcPlan">
+        <dc:Bounds x="1760" y="150" width="140" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Season_di" bpmnElement="EndEvent_Season">
+        <dc:Bounds x="2152" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2129" y="205" width="83" height="66" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AdjustBaseline_di" bpmnElement="Task_AdjustBaseline">
+        <dc:Bounds x="1250" y="690" width="140" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AssessImpact_di" bpmnElement="Task_AssessImpact">
+        <dc:Bounds x="1040" y="680" width="140" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AnalyzeResults_di" bpmnElement="Task_AnalyzeResults">
+        <dc:Bounds x="1060" y="330" width="140" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_ForceFlag_di" bpmnElement="Gateway_ForceFlag" isMarkerVisible="true">
+        <dc:Bounds x="1260" y="335" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1242" y="285" width="86" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_FlagForce_di" bpmnElement="Task_FlagForce">
+        <dc:Bounds x="1220" y="470" width="140" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Strategy_di" bpmnElement="Gateway_Strategy" isMarkerVisible="true">
+        <dc:Bounds x="1470" y="375" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1510" y="350" width="80" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Expansion_di" bpmnElement="Task_Expansion">
+        <dc:Bounds x="1860" y="370" width="140" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Expansion_di" bpmnElement="EndEvent_Expansion">
+        <dc:Bounds x="2182" y="382" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2158" y="425" width="84" height="93" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_DataComplete_di" bpmnElement="Gateway_DataComplete" isMarkerVisible="true">
+        <dc:Bounds x="550" y="195" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="544" y="252" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_CheckData_di" bpmnElement="Task_CheckData">
+        <dc:Bounds x="350" y="190" width="140" height="60" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
-        <dc:Bounds x="230" y="142" width="36" height="36" />
+        <dc:Bounds x="262" y="202" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="209" y="185" width="79" height="27" />
+          <dc:Bounds x="236" y="245" width="89" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_1_di" bpmnElement="Task_1">
-        <dc:Bounds x="320" y="120" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_RequestData_di" bpmnElement="Task_RequestData">
+        <dc:Bounds x="505" y="82" width="140" height="55" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_2_di" bpmnElement="Task_2">
-        <dc:Bounds x="460" y="120" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_UpdateDashboard_di" bpmnElement="Task_UpdateDashboard">
+        <dc:Bounds x="1090" y="190" width="140" height="60" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_3_di" bpmnElement="Task_3">
-        <dc:Bounds x="600" y="120" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_CalcProfitability_di" bpmnElement="Task_CalcProfitability">
+        <dc:Bounds x="924" y="190" width="140" height="60" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_4_di" bpmnElement="Task_4">
-        <dc:Bounds x="600" y="325" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_AggregateCosts_di" bpmnElement="Task_AggregateCosts">
+        <dc:Bounds x="760" y="190" width="140" height="60" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1_di" bpmnElement="Gateway_1" isMarkerVisible="true">
-        <dc:Bounds x="760" y="340" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="746" y="397" width="79" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_5_di" bpmnElement="Task_5">
-        <dc:Bounds x="880" y="325" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_6_di" bpmnElement="Task_6">
-        <dc:Bounds x="880" y="100" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_7_di" bpmnElement="Task_7">
-        <dc:Bounds x="880" y="200" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
-        <dc:Bounds x="1040" y="347" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1016" y="390" width="85" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_2_di" bpmnElement="EndEvent_2">
-        <dc:Bounds x="1040" y="122" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1016" y="165" width="85" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_3_di" bpmnElement="EndEvent_3">
-        <dc:Bounds x="1040" y="222" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1019" y="265" width="79" height="40" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
-        <di:waypoint x="266" y="160" />
-        <di:waypoint x="320" y="160" />
+      <bpmndi:BPMNEdge id="Flow_Disaster_Assess_di" bpmnElement="Flow_Disaster_Assess">
+        <di:waypoint x="948" y="660" />
+        <di:waypoint x="994" y="660" />
+        <di:waypoint x="994" y="710" />
+        <di:waypoint x="1040" y="710" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
-        <di:waypoint x="420" y="160" />
-        <di:waypoint x="460" y="160" />
+      <bpmndi:BPMNEdge id="Flow_Assess_Adjust_di" bpmnElement="Flow_Assess_Adjust">
+        <di:waypoint x="1180" y="710" />
+        <di:waypoint x="1205" y="710" />
+        <di:waypoint x="1205" y="720" />
+        <di:waypoint x="1250" y="720" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
-        <di:waypoint x="560" y="160" />
-        <di:waypoint x="600" y="160" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
-        <di:waypoint x="650" y="200" />
-        <di:waypoint x="650" y="325" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
-        <di:waypoint x="700" y="365" />
-        <di:waypoint x="760" y="365" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
-        <di:waypoint x="810" y="365" />
-        <di:waypoint x="880" y="365" />
+      <bpmndi:BPMNEdge id="Flow_AdjustedBaseline_Dashboard_di" bpmnElement="Flow_AdjustedBaseline_Dashboard">
+        <di:waypoint x="1320" y="690" />
+        <di:waypoint x="1320" y="560" />
+        <di:waypoint x="1230" y="560" />
+        <di:waypoint x="1230" y="240" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="820" y="347" width="51" height="14" />
+          <dc:Bounds x="1235" y="544" width="81" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
-        <di:waypoint x="785" y="340" />
-        <di:waypoint x="785" y="140" />
-        <di:waypoint x="880" y="140" />
+      <bpmndi:BPMNEdge id="Flow_Dashboard_Analyze_di" bpmnElement="Flow_Dashboard_Analyze">
+        <di:waypoint x="1160" y="250" />
+        <di:waypoint x="1160" y="290" />
+        <di:waypoint x="1130" y="290" />
+        <di:waypoint x="1130" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ForceFlag_Note_di" bpmnElement="Flow_ForceFlag_Note">
+        <di:waypoint x="1285" y="385" />
+        <di:waypoint x="1285" y="438" />
+        <di:waypoint x="1290" y="438" />
+        <di:waypoint x="1290" y="470" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="790" y="123" width="83" height="14" />
+          <dc:Bounds x="1262" y="408" width="51" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
-        <di:waypoint x="785" y="340" />
-        <di:waypoint x="785" y="240" />
-        <di:waypoint x="880" y="240" />
+      <bpmndi:BPMNEdge id="Flow_Flag_Strategy_di" bpmnElement="Flow_Flag_Strategy">
+        <di:waypoint x="1360" y="500" />
+        <di:waypoint x="1495" y="500" />
+        <di:waypoint x="1495" y="425" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Strategy_Restructure_di" bpmnElement="Flow_Strategy_Restructure">
+        <di:waypoint x="1495" y="375" />
+        <di:waypoint x="1495" y="180" />
+        <di:waypoint x="1760" y="180" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="802" y="223" width="55" height="14" />
+          <dc:Bounds x="1559" y="163" width="83" height="80" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
-        <di:waypoint x="980" y="365" />
-        <di:waypoint x="1040" y="365" />
+      <bpmndi:BPMNEdge id="Flow_Strategy_StatusQuo_di" bpmnElement="Flow_Strategy_StatusQuo">
+        <di:waypoint x="1495" y="375" />
+        <di:waypoint x="1495" y="270" />
+        <di:waypoint x="1760" y="270" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1550" y="253" width="76" height="40" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
-        <di:waypoint x="980" y="140" />
-        <di:waypoint x="1040" y="140" />
+      <bpmndi:BPMNEdge id="Flow_Recalc_End_di" bpmnElement="Flow_Recalc_End">
+        <di:waypoint x="1900" y="180" />
+        <di:waypoint x="1960" y="180" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
-        <di:waypoint x="980" y="240" />
-        <di:waypoint x="1040" y="240" />
+      <bpmndi:BPMNEdge id="Flow_Init_End_di" bpmnElement="Flow_Init_End">
+        <di:waypoint x="1900" y="270" />
+        <di:waypoint x="2026" y="270" />
+        <di:waypoint x="2026" y="180" />
+        <di:waypoint x="2152" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Analyze_ForceFlag_di" bpmnElement="Flow_Analyze_ForceFlag">
+        <di:waypoint x="1200" y="360" />
+        <di:waypoint x="1260" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ForceFlag_Skip_di" bpmnElement="Flow_ForceFlag_Skip">
+        <di:waypoint x="1285" y="385" />
+        <di:waypoint x="1285" y="400" />
+        <di:waypoint x="1470" y="400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1339" y="383" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Strategy_Expansion_di" bpmnElement="Flow_Strategy_Expansion">
+        <di:waypoint x="1520" y="400" />
+        <di:waypoint x="1860" y="400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1632" y="383" width="85" height="66" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Expansion_End_di" bpmnElement="Flow_Expansion_End">
+        <di:waypoint x="2000" y="400" />
+        <di:waypoint x="2182" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_DataMissing_di" bpmnElement="Flow_DataMissing">
+        <di:waypoint x="575" y="195" />
+        <di:waypoint x="575" y="137" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="588" y="153" width="64" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Retry_Check_di" bpmnElement="Flow_Retry_Check">
+        <di:waypoint x="505" y="109" />
+        <di:waypoint x="420" y="109" />
+        <di:waypoint x="420" y="190" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="389" y="67" width="89" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Calc_Dashboard_di" bpmnElement="Flow_Calc_Dashboard">
+        <di:waypoint x="1064" y="220" />
+        <di:waypoint x="1090" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Agg_Calc_di" bpmnElement="Flow_Agg_Calc">
+        <di:waypoint x="900" y="220" />
+        <di:waypoint x="924" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_DataOK_di" bpmnElement="Flow_DataOK">
+        <di:waypoint x="600" y="220" />
+        <di:waypoint x="760" y="220" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="637" y="203" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Check_Gateway_di" bpmnElement="Flow_Check_Gateway">
+        <di:waypoint x="490" y="220" />
+        <di:waypoint x="550" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Start_Check_di" bpmnElement="Flow_Start_Check">
+        <di:waypoint x="298" y="220" />
+        <di:waypoint x="350" y="220" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
