@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_HR_V3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.13.1">
+  <bpmn:collaboration id="Collaboration_HR">
+    <bpmn:participant id="Participant_HR" name="Zarządzanie Zespołem i Czasem Pracy (Dynamic HR)" processRef="Process_HR" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_HR" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_HR">
+      <bpmn:lane id="Lane_Zarzadca" name="Zarządca">
+        <bpmn:flowNodeRef>StartEvent_Dzien</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_UstalGrafik</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_KomunikacjaKryzysowa</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_DecyzjaPoAwarii</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Odwolane</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ZatwierdzRaport</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_CzyRaportOK</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_System" name="System Centralny">
+        <bpmn:flowNodeRef>Task_WyslijPush</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Rozliczone</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ZliczCzas</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_GenerujPlace</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Pracownik" name="Pracownik (Aplikacja)">
+        <bpmn:flowNodeRef>Task_OdbierzZadanie</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_StatusPracy</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ZakonczPrace</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_Dzien" name="Początek zmiany">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_UstalGrafik" name="Ustal grafik zadań">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:incoming>Flow_Replanuj</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_WyslijPush" name="Roześlij zadania">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_OdbierzZadanie" name="Realizacja zadania">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:incoming>Flow_Poprawka</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_StatusPracy" name="Czy problem?">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_Problem</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Sukces</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_KomunikacjaKryzysowa" name="Zarządzaj awarią">
+      <bpmn:incoming>Flow_Problem</bpmn:incoming>
+      <bpmn:outgoing>Flow_PoKryzysie</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_DecyzjaPoAwarii" name="Czy wykonalne?">
+      <bpmn:incoming>Flow_PoKryzysie</bpmn:incoming>
+      <bpmn:outgoing>Flow_Replanuj</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Anuluj</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="EndEvent_Odwolane" name="Zmiana odwołana">
+      <bpmn:incoming>Flow_Anuluj</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="EndEvent_Rozliczone" name="Rozliczone">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_Dzien" targetRef="Task_UstalGrafik" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_UstalGrafik" targetRef="Task_WyslijPush" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_WyslijPush" targetRef="Task_OdbierzZadanie" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_OdbierzZadanie" targetRef="Gateway_StatusPracy" />
+    <bpmn:sequenceFlow id="Flow_Problem" name="TAK" sourceRef="Gateway_StatusPracy" targetRef="Task_KomunikacjaKryzysowa" />
+    <bpmn:sequenceFlow id="Flow_PoKryzysie" sourceRef="Task_KomunikacjaKryzysowa" targetRef="Gateway_DecyzjaPoAwarii" />
+    <bpmn:sequenceFlow id="Flow_Replanuj" name="TAK" sourceRef="Gateway_DecyzjaPoAwarii" targetRef="Task_UstalGrafik" />
+    <bpmn:sequenceFlow id="Flow_Anuluj" name="NIE" sourceRef="Gateway_DecyzjaPoAwarii" targetRef="EndEvent_Odwolane" />
+    <bpmn:sequenceFlow id="Flow_Sukces" name="NIE" sourceRef="Gateway_StatusPracy" targetRef="Task_ZakonczPrace" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_ZakonczPrace" targetRef="Task_ZliczCzas" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Task_ZliczCzas" targetRef="Task_ZatwierdzRaport" />
+    <bpmn:sequenceFlow id="Flow_To_Check" sourceRef="Task_ZatwierdzRaport" targetRef="Gateway_CzyRaportOK" />
+    <bpmn:sequenceFlow id="Flow_7" name="TAK" sourceRef="Gateway_CzyRaportOK" targetRef="Task_GenerujPlace" />
+    <bpmn:sequenceFlow id="Flow_Poprawka" name="NIE" sourceRef="Gateway_CzyRaportOK" targetRef="Task_OdbierzZadanie" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Task_GenerujPlace" targetRef="EndEvent_Rozliczone" />
+    <bpmn:manualTask id="Task_ZakonczPrace" name="Odznacz zakończenie">
+      <bpmn:incoming>Flow_Sukces</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:serviceTask id="Task_ZliczCzas" name="Zlicz czas">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_ZatwierdzRaport" name="Zatwierdź pracę">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_To_Check</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_CzyRaportOK" name="OK?">
+      <bpmn:incoming>Flow_To_Check</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Poprawka</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_GenerujPlace" name="Generuj płace">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_HR">
+      <bpmndi:BPMNShape id="Participant_HR_di" bpmnElement="Participant_HR" isHorizontal="true">
+        <dc:Bounds x="120" y="50" width="1250" height="490" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Pracownik_di" bpmnElement="Lane_Pracownik" isHorizontal="true">
+        <dc:Bounds x="150" y="380" width="1220" height="160" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_System_di" bpmnElement="Lane_System" isHorizontal="true">
+        <dc:Bounds x="150" y="230" width="1220" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Zarzadca_di" bpmnElement="Lane_Zarzadca" isHorizontal="true">
+        <dc:Bounds x="150" y="50" width="1220" height="180" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_Dzien_di" bpmnElement="StartEvent_Dzien">
+        <dc:Bounds x="192" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_UstalGrafik_di" bpmnElement="Task_UstalGrafik">
+        <dc:Bounds x="280" y="110" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_WyslijPush_di" bpmnElement="Task_WyslijPush">
+        <dc:Bounds x="280" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_OdbierzZadanie_di" bpmnElement="Task_OdbierzZadanie">
+        <dc:Bounds x="280" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_StatusPracy_di" bpmnElement="Gateway_StatusPracy" isMarkerVisible="true">
+        <dc:Bounds x="435" y="435" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="426" y="485" width="69" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_KomunikacjaKryzysowa_di" bpmnElement="Task_KomunikacjaKryzysowa">
+        <dc:Bounds x="410" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_DecyzjaPoAwarii_di" bpmnElement="Gateway_DecyzjaPoAwarii" isMarkerVisible="true">
+        <dc:Bounds x="545" y="125" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Odwolane_di" bpmnElement="EndEvent_Odwolane">
+        <dc:Bounds x="642" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Rozliczone_di" bpmnElement="EndEvent_Rozliczone">
+        <dc:Bounds x="1262" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ZakonczPrace_di" bpmnElement="Task_ZakonczPrace">
+        <dc:Bounds x="755" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ZliczCzas_di" bpmnElement="Task_ZliczCzas">
+        <dc:Bounds x="870" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ZatwierdzRaport_di" bpmnElement="Task_ZatwierdzRaport">
+        <dc:Bounds x="1010" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_CzyRaportOK_di" bpmnElement="Gateway_CzyRaportOK" isMarkerVisible="true">
+        <dc:Bounds x="1165" y="125" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1224.5" y="143" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_GenerujPlace_di" bpmnElement="Task_GenerujPlace">
+        <dc:Bounds x="1140" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="228" y="150" />
+        <di:waypoint x="280" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="330" y="190" />
+        <di:waypoint x="330" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="330" y="340" />
+        <di:waypoint x="330" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="380" y="460" />
+        <di:waypoint x="435" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Problem_di" bpmnElement="Flow_Problem">
+        <di:waypoint x="460" y="435" />
+        <di:waypoint x="460" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_PoKryzysie_di" bpmnElement="Flow_PoKryzysie">
+        <di:waypoint x="510" y="150" />
+        <di:waypoint x="545" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Replanuj_di" bpmnElement="Flow_Replanuj">
+        <di:waypoint x="570" y="125" />
+        <di:waypoint x="570" y="100" />
+        <di:waypoint x="330" y="100" />
+        <di:waypoint x="330" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Anuluj_di" bpmnElement="Flow_Anuluj">
+        <di:waypoint x="595" y="150" />
+        <di:waypoint x="642" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Sukces_di" bpmnElement="Flow_Sukces">
+        <di:waypoint x="485" y="460" />
+        <di:waypoint x="755" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="611" y="435" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="805" y="420" />
+        <di:waypoint x="805" y="300" />
+        <di:waypoint x="870" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="920" y="260" />
+        <di:waypoint x="920" y="150" />
+        <di:waypoint x="1010" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_To_Check_di" bpmnElement="Flow_To_Check">
+        <di:waypoint x="1110" y="150" />
+        <di:waypoint x="1165" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1190" y="175" />
+        <di:waypoint x="1190" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1194" y="208" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Poprawka_di" bpmnElement="Flow_Poprawka">
+        <di:waypoint x="1190" y="125" />
+        <di:waypoint x="1190" y="90" />
+        <di:waypoint x="720" y="90" />
+        <di:waypoint x="720" y="520" />
+        <di:waypoint x="330" y="520" />
+        <di:waypoint x="330" y="500" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="946" y="65" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="1240" y="300" />
+        <di:waypoint x="1262" y="300" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
