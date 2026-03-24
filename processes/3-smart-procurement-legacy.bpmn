@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_SmartProcurement_V2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.13.1">
+  <bpmn:collaboration id="Collaboration_0">
+    <bpmn:participant id="Participant_System" name="Zintegrowany System Zarządzania (FMIS)" processRef="Process_SmartProcurement" />
+    <bpmn:participant id="Participant_Dystrybutor" name="Dystrybutorzy Agro (Systemy Zewnętrzne)" />
+    <bpmn:messageFlow id="Flow_Message_Out" name="Zapytanie o ceny i dostępność" sourceRef="Activity_MonitorRynek" targetRef="Participant_Dystrybutor" />
+    <bpmn:messageFlow id="Flow_Message_In" name="Cenniki i Dostępność" sourceRef="Participant_Dystrybutor" targetRef="Activity_MonitorRynek" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_SmartProcurement" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_0">
+      <bpmn:lane id="Lane_AI" name="Moduł Algorytmiczny / AI">
+        <bpmn:flowNodeRef>Start_Sezon</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_Prognozowanie</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_MonitorRynek</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_Optymalizacja</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Zarzadca" name="Właściciel / Zaopatrzeniowiec">
+        <bpmn:flowNodeRef>Activity_Zatwierdzenie</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_ZamowienieWyslane</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Akceptacja</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_Sezon" name="Planowanie nowego sezonu">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Activity_Prognozowanie" name="Wyliczenie zapotrzebowania">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_MonitorRynek" name="Interakcja z API Dystrybutorów">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:incoming>Flow_Nie</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:businessRuleTask id="Activity_Optymalizacja" name="Analiza ofert i wahań cen">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:userTask id="Activity_Zatwierdzenie" name="Akceptacja koszyka zakupowego">
+      <bpmn:incoming>Flow_Tak</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_ZamowienieWyslane" name="Zamówienie złożone">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_Sezon" targetRef="Activity_Prognozowanie" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Activity_Prognozowanie" targetRef="Activity_MonitorRynek" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Activity_MonitorRynek" targetRef="Activity_Optymalizacja" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Activity_Optymalizacja" targetRef="Gateway_Akceptacja" />
+    <bpmn:sequenceFlow id="Flow_Tak" name="Kup teraz" sourceRef="Gateway_Akceptacja" targetRef="Activity_Zatwierdzenie" />
+    <bpmn:sequenceFlow id="Flow_Nie" name="Czekaj na lepszą cenę" sourceRef="Gateway_Akceptacja" targetRef="Activity_MonitorRynek" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Activity_Zatwierdzenie" targetRef="End_ZamowienieWyslane" />
+    <bpmn:exclusiveGateway id="Gateway_Akceptacja" name="Decyzja o zakupie?">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_Tak</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Nie</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0">
+      <bpmndi:BPMNShape id="Participant_System_di" bpmnElement="Participant_System" isHorizontal="true">
+        <dc:Bounds x="160" y="190" width="850" height="400" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Zarzadca_di" bpmnElement="Lane_Zarzadca" isHorizontal="true">
+        <dc:Bounds x="190" y="390" width="820" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_AI_di" bpmnElement="Lane_AI" isHorizontal="true">
+        <dc:Bounds x="190" y="190" width="820" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_Sezon_di" bpmnElement="Start_Sezon">
+        <dc:Bounds x="232" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_Prognozowanie_di" bpmnElement="Activity_Prognozowanie">
+        <dc:Bounds x="320" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_MonitorRynek_di" bpmnElement="Activity_MonitorRynek">
+        <dc:Bounds x="470" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_Optymalizacja_di" bpmnElement="Activity_Optymalizacja">
+        <dc:Bounds x="620" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_Zatwierdzenie_di" bpmnElement="Activity_Zatwierdzenie">
+        <dc:Bounds x="620" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_ZamowienieWyslane_di" bpmnElement="End_ZamowienieWyslane">
+        <dc:Bounds x="842" y="522" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Akceptacja_di" bpmnElement="Gateway_Akceptacja" isMarkerVisible="true">
+        <dc:Bounds x="495" y="435" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="495" y="397.5" width="49" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="268" y="290" />
+        <di:waypoint x="320" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="420" y="290" />
+        <di:waypoint x="470" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="570" y="290" />
+        <di:waypoint x="620" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="720" y="290" />
+        <di:waypoint x="745" y="290" />
+        <di:waypoint x="745" y="460" />
+        <di:waypoint x="545" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Tak_di" bpmnElement="Flow_Tak">
+        <di:waypoint x="520" y="485" />
+        <di:waypoint x="520" y="540" />
+        <di:waypoint x="620" y="540" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="476" y="500" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Nie_di" bpmnElement="Flow_Nie">
+        <di:waypoint x="495" y="460" />
+        <di:waypoint x="450" y="460" />
+        <di:waypoint x="450" y="350" />
+        <di:waypoint x="520" y="350" />
+        <di:waypoint x="520" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="358" y="406" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="720" y="540" />
+        <di:waypoint x="842" y="540" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_Dystrybutor_di" bpmnElement="Participant_Dystrybutor" isHorizontal="true">
+        <dc:Bounds x="160" y="40" width="850" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_Message_Out_di" bpmnElement="Flow_Message_Out">
+        <di:waypoint x="480" y="250" />
+        <di:waypoint x="480" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="388" y="146" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Message_In_di" bpmnElement="Flow_Message_In">
+        <di:waypoint x="560" y="120" />
+        <di:waypoint x="560" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="570" y="146" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
