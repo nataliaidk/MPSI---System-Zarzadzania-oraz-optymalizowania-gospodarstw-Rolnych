@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_Process4_StorageSales" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.13.1">
+  <bpmn:dataStore id="DataStore_PriceHistory" name="Historia cen skupu" />
+  <bpmn:dataStore id="DataStore_SiloInventory" name="Stan magazynowy i partie plonu" />
+  <bpmn:collaboration id="Collaboration_Process4">
+    <bpmn:participant id="Participant_MarketSources" name="Źródła cen skupu / systemy zewnętrzne" />
+    <bpmn:participant id="Participant_00nbw7j" processRef="Process_084ga2g" />
+    <bpmn:messageFlow id="MessageFlow_ReceivePrices" name="Aktualne ceny i trendy rynkowe" sourceRef="Participant_MarketSources" targetRef="ServiceTask_UpdatePriceHistoryAndAnalyze" />
+    <bpmn:messageFlow id="MessageFlow_RequestPrices" name="Zapytanie o aktualne notowania" sourceRef="ServiceTask_RequestMarketPrices" targetRef="Participant_MarketSources" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_084ga2g">
+    <bpmn:laneSet id="LaneSet_1xelfqe">
+      <bpmn:lane id="Lane_1vdaxwh" name="System magazynowy / analityczny">
+        <bpmn:flowNodeRef>Event_ConnectionRestored</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_GenerateStorageAlert</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_StorageRisk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_MonitorSilo</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_UpdateInventoryQuality</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_ValidateBatchAndAssign</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_SyncDumpEntry</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_SaveOfflineEntry</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1mcjznj" name="Właściciel / Zarządca">
+        <bpmn:flowNodeRef>EventSubProcess_PriceMonitoring</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_ReviewStorageAlert</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_ProcessClosed</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0r3hw5q" name="Operator / Aplikacja mobilna">
+        <bpmn:flowNodeRef>Gateway_DeviceOnline</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_RegisterHarvestDump</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_HarvestDelivery</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:dataStoreReference id="DataStoreReference_SiloInventory" name="Stan magazynowy" dataStoreRef="DataStore_SiloInventory" />
+    <bpmn:intermediateCatchEvent id="Event_ConnectionRestored" name="Połączenie odzyskane">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+      <bpmn:conditionalEventDefinition>
+        <bpmn:condition xsi:type="bpmn:tFormalExpression">connectionAvailable = true</bpmn:condition>
+      </bpmn:conditionalEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:dataStoreReference id="DataStoreReference_PriceHistory" name="Historia cen skupu" dataStoreRef="DataStore_PriceHistory" />
+    <bpmn:dataObjectReference id="DataObjectReference_SalesRecommendation" name="Rekomendacja sprzedaży" dataObjectRef="DataObject_SalesRecommendation" />
+    <bpmn:dataObject id="DataObject_SalesRecommendation" name="Rekomendacja sprzedaży" />
+    <bpmn:serviceTask id="ServiceTask_GenerateStorageAlert" name="Wygeneruj alert magazynowy">
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_StorageRisk" name="Czy występuje ryzyko pojemnościowe lub jakościowe?">
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="ServiceTask_MonitorSilo" name="Monitoruj poziom zapełnienia i wilgotność ziarna">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+      <bpmn:property id="Property_0oonsro" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_0t3nmdk">
+        <bpmn:sourceRef>DataStoreReference_SiloInventory</bpmn:sourceRef>
+        <bpmn:targetRef>Property_0oonsro</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ServiceTask_UpdateInventoryQuality" name="Zaktualizuj stan magazynowy i parametry partii">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_1dyeb7c">
+        <bpmn:targetRef>DataStoreReference_SiloInventory</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ServiceTask_ValidateBatchAndAssign" name="Zweryfikuj dane partii i przypisz do silosu">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ServiceTask_SyncDumpEntry" name="Synchronizuj wpis z systemem">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ServiceTask_SaveOfflineEntry" name="Zapisz wpis lokalnie w trybie offline">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_DeviceOnline" name="Czy urządzenie jest online?">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="UserTask_RegisterHarvestDump" name="Zarejestruj zrzut plonu do wirtualnego silosu">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="StartEvent_HarvestDelivery" name="Dostawa plonu z pola">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="ServiceTask_SaveOfflineEntry" targetRef="Event_ConnectionRestored" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Event_ConnectionRestored" targetRef="ServiceTask_SyncDumpEntry" />
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="ServiceTask_GenerateStorageAlert" targetRef="UserTask_ReviewStorageAlert" />
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="UserTask_ReviewStorageAlert" targetRef="EndEvent_ProcessClosed" />
+    <bpmn:sequenceFlow id="Flow_12" name="Nie" sourceRef="Gateway_StorageRisk" targetRef="EndEvent_ProcessClosed" />
+    <bpmn:sequenceFlow id="Flow_11" name="Tak" sourceRef="Gateway_StorageRisk" targetRef="ServiceTask_GenerateStorageAlert" />
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="ServiceTask_MonitorSilo" targetRef="Gateway_StorageRisk" />
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="ServiceTask_UpdateInventoryQuality" targetRef="ServiceTask_MonitorSilo" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="ServiceTask_ValidateBatchAndAssign" targetRef="ServiceTask_UpdateInventoryQuality" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="ServiceTask_SyncDumpEntry" targetRef="ServiceTask_ValidateBatchAndAssign" />
+    <bpmn:sequenceFlow id="Flow_3" name="Tak" sourceRef="Gateway_DeviceOnline" targetRef="ServiceTask_SyncDumpEntry" />
+    <bpmn:sequenceFlow id="Flow_4" name="Nie" sourceRef="Gateway_DeviceOnline" targetRef="ServiceTask_SaveOfflineEntry" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="UserTask_RegisterHarvestDump" targetRef="Gateway_DeviceOnline" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_HarvestDelivery" targetRef="UserTask_RegisterHarvestDump" />
+    <bpmn:subProcess id="EventSubProcess_PriceMonitoring" name="Ciągłe monitorowanie cen skupu" triggeredByEvent="true">
+      <bpmn:sequenceFlow id="SubFlow_10" sourceRef="UserTask_OrderSale" targetRef="EndEvent_SaleOrdered" />
+      <bpmn:sequenceFlow id="SubFlow_8" name="Tak" sourceRef="Gateway_ApproveSale" targetRef="UserTask_OrderSale" />
+      <bpmn:sequenceFlow id="SubFlow_9" name="Nie" sourceRef="Gateway_ApproveSale" targetRef="EndEvent_SaleDeferred" />
+      <bpmn:sequenceFlow id="SubFlow_7" sourceRef="UserTask_ReviewSalesRecommendation" targetRef="Gateway_ApproveSale" />
+      <bpmn:sequenceFlow id="SubFlow_6" sourceRef="ServiceTask_GenerateSalesRecommendation" targetRef="UserTask_ReviewSalesRecommendation" />
+      <bpmn:sequenceFlow id="SubFlow_4" name="Nie" sourceRef="Gateway_SalesOpportunity" targetRef="EndEvent_NoOpportunity" />
+      <bpmn:sequenceFlow id="SubFlow_5" name="Tak" sourceRef="Gateway_SalesOpportunity" targetRef="ServiceTask_GenerateSalesRecommendation" />
+      <bpmn:sequenceFlow id="SubFlow_3" sourceRef="ServiceTask_UpdatePriceHistoryAndAnalyze" targetRef="Gateway_SalesOpportunity" />
+      <bpmn:sequenceFlow id="SubFlow_2" sourceRef="ServiceTask_RequestMarketPrices" targetRef="ServiceTask_UpdatePriceHistoryAndAnalyze" />
+      <bpmn:sequenceFlow id="SubFlow_1" sourceRef="StartEvent_TimerPriceCheck" targetRef="ServiceTask_RequestMarketPrices" />
+      <bpmn:endEvent id="EndEvent_SaleOrdered" name="Sprzedaż zlecona">
+        <bpmn:incoming>SubFlow_10</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:endEvent id="EndEvent_SaleDeferred" name="Sprzedaż odroczona">
+        <bpmn:incoming>SubFlow_9</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:endEvent id="EndEvent_NoOpportunity" name="Brak alertu sprzedażowego">
+        <bpmn:incoming>SubFlow_4</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:userTask id="UserTask_OrderSale" name="Zleć sprzedaż partii plonu">
+        <bpmn:incoming>SubFlow_8</bpmn:incoming>
+        <bpmn:outgoing>SubFlow_10</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:exclusiveGateway id="Gateway_ApproveSale" name="Czy zatwierdzić sprzedaż?">
+        <bpmn:incoming>SubFlow_7</bpmn:incoming>
+        <bpmn:outgoing>SubFlow_9</bpmn:outgoing>
+        <bpmn:outgoing>SubFlow_8</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:userTask id="UserTask_ReviewSalesRecommendation" name="Przejrzyj rekomendację sprzedaży">
+        <bpmn:incoming>SubFlow_6</bpmn:incoming>
+        <bpmn:outgoing>SubFlow_7</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:serviceTask id="ServiceTask_GenerateSalesRecommendation" name="Wygeneruj rekomendację sprzedaży">
+        <bpmn:incoming>SubFlow_5</bpmn:incoming>
+        <bpmn:outgoing>SubFlow_6</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:exclusiveGateway id="Gateway_SalesOpportunity" name="Czy cena przekracza próg opłacalności?">
+        <bpmn:incoming>SubFlow_3</bpmn:incoming>
+        <bpmn:outgoing>SubFlow_5</bpmn:outgoing>
+        <bpmn:outgoing>SubFlow_4</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:serviceTask id="ServiceTask_UpdatePriceHistoryAndAnalyze" name="Zaktualizuj historię cen i przeanalizuj opłacalność">
+        <bpmn:incoming>SubFlow_2</bpmn:incoming>
+        <bpmn:outgoing>SubFlow_3</bpmn:outgoing>
+        <bpmn:property id="Property_1xjfy0v" name="__targetRef_placeholder" />
+        <bpmn:dataInputAssociation id="DataInputAssociation_0pwn3a9">
+          <bpmn:sourceRef>DataStoreReference_SiloInventory</bpmn:sourceRef>
+          <bpmn:targetRef>Property_1xjfy0v</bpmn:targetRef>
+        </bpmn:dataInputAssociation>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="ServiceTask_RequestMarketPrices" name="Pobierz aktualne ceny skupu">
+        <bpmn:incoming>SubFlow_1</bpmn:incoming>
+        <bpmn:outgoing>SubFlow_2</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:startEvent id="StartEvent_TimerPriceCheck" name="Cykl monitoringu cen" isInterrupting="false">
+        <bpmn:outgoing>SubFlow_1</bpmn:outgoing>
+        <bpmn:timerEventDefinition>
+          <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/PT1H</bpmn:timeCycle>
+        </bpmn:timerEventDefinition>
+      </bpmn:startEvent>
+      <bpmn:association id="Association_Recommendation_Input" sourceRef="DataObjectReference_SalesRecommendation" targetRef="UserTask_ReviewSalesRecommendation" />
+      <bpmn:association id="Association_Recommendation_Output" sourceRef="ServiceTask_GenerateSalesRecommendation" targetRef="DataObjectReference_SalesRecommendation" />
+      <bpmn:association id="Association_PriceHistory_ReadWrite" sourceRef="ServiceTask_UpdatePriceHistoryAndAnalyze" targetRef="DataStoreReference_PriceHistory" />
+    </bpmn:subProcess>
+    <bpmn:userTask id="UserTask_ReviewStorageAlert" name="Przejrzyj alert magazynowy">
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+      <bpmn:outgoing>Flow_14</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_ProcessClosed" name="Proces zakończony">
+      <bpmn:incoming>Flow_14</bpmn:incoming>
+      <bpmn:incoming>Flow_12</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_Process4">
+      <bpmndi:BPMNShape id="Participant_MarketSources_di" bpmnElement="Participant_MarketSources" isHorizontal="true">
+        <dc:Bounds x="160" y="40" width="2500" height="140" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_00nbw7j_di" bpmnElement="Participant_00nbw7j" isHorizontal="true">
+        <dc:Bounds x="160" y="280" width="2500" height="1010" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1vdaxwh_di" bpmnElement="Lane_1vdaxwh" isHorizontal="true">
+        <dc:Bounds x="190" y="460" width="2470" height="280" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1mcjznj_di" bpmnElement="Lane_1mcjznj" isHorizontal="true">
+        <dc:Bounds x="190" y="740" width="2470" height="550" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0r3hw5q_di" bpmnElement="Lane_0r3hw5q" isHorizontal="true">
+        <dc:Bounds x="190" y="280" width="2470" height="180" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_SiloInventory_di" bpmnElement="DataStoreReference_SiloInventory">
+        <dc:Bounds x="1605" y="365" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1597" y="327.5" width="65" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_ConnectionRestored_di" bpmnElement="Event_ConnectionRestored">
+        <dc:Bounds x="940" y="562" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="931" y="606" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_PriceHistory_di" bpmnElement="DataStoreReference_PriceHistory">
+        <dc:Bounds x="1105" y="720" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1100" y="683" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_SalesRecommendation_di" bpmnElement="DataObjectReference_SalesRecommendation">
+        <dc:Bounds x="1727" y="720" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1708" y="683" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_GenerateStorageAlert_di" bpmnElement="ServiceTask_GenerateStorageAlert">
+        <dc:Bounds x="2110" y="540" width="190" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_StorageRisk_di" bpmnElement="Gateway_StorageRisk" isMarkerVisible="true">
+        <dc:Bounds x="2020" y="555" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2006" y="614.5" width="78" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_MonitorSilo_di" bpmnElement="ServiceTask_MonitorSilo">
+        <dc:Bounds x="1770" y="540" width="200" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_UpdateInventoryQuality_di" bpmnElement="ServiceTask_UpdateInventoryQuality">
+        <dc:Bounds x="1510" y="540" width="210" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_ValidateBatchAndAssign_di" bpmnElement="ServiceTask_ValidateBatchAndAssign">
+        <dc:Bounds x="1250" y="540" width="210" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_SyncDumpEntry_di" bpmnElement="ServiceTask_SyncDumpEntry">
+        <dc:Bounds x="1020" y="540" width="180" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_SaveOfflineEntry_di" bpmnElement="ServiceTask_SaveOfflineEntry">
+        <dc:Bounds x="710" y="540" width="180" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_DeviceOnline_di" bpmnElement="Gateway_DeviceOnline" isMarkerVisible="true">
+        <dc:Bounds x="590" y="355" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="577" y="318" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_RegisterHarvestDump_di" bpmnElement="UserTask_RegisterHarvestDump">
+        <dc:Bounds x="340" y="340" width="190" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_HarvestDelivery_di" bpmnElement="StartEvent_HarvestDelivery">
+        <dc:Bounds x="240" y="362" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="217" y="398" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_ReviewStorageAlert_di" bpmnElement="UserTask_ReviewStorageAlert">
+        <dc:Bounds x="2300" y="800" width="200" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_ProcessClosed_di" bpmnElement="EndEvent_ProcessClosed">
+        <dc:Bounds x="2542" y="822" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2531" y="858" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EventSubProcess_PriceMonitoring_di" bpmnElement="EventSubProcess_PriceMonitoring" isExpanded="true">
+        <dc:Bounds x="640" y="840" width="1616" height="400" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_TimerPriceCheck_di" bpmnElement="StartEvent_TimerPriceCheck">
+        <dc:Bounds x="680" y="962" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="657" y="998" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_RequestMarketPrices_di" bpmnElement="ServiceTask_RequestMarketPrices">
+        <dc:Bounds x="760" y="940" width="190" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_UpdatePriceHistoryAndAnalyze_di" bpmnElement="ServiceTask_UpdatePriceHistoryAndAnalyze">
+        <dc:Bounds x="1010" y="940" width="240" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_SalesOpportunity_di" bpmnElement="Gateway_SalesOpportunity" isMarkerVisible="true">
+        <dc:Bounds x="1300" y="955" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1285" y="905" width="79" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_GenerateSalesRecommendation_di" bpmnElement="ServiceTask_GenerateSalesRecommendation">
+        <dc:Bounds x="1390" y="940" width="200" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_ReviewSalesRecommendation_di" bpmnElement="UserTask_ReviewSalesRecommendation">
+        <dc:Bounds x="1640" y="1010" width="210" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_ApproveSale_di" bpmnElement="Gateway_ApproveSale" isMarkerVisible="true">
+        <dc:Bounds x="1900" y="1025" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1886" y="988" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_OrderSale_di" bpmnElement="UserTask_OrderSale">
+        <dc:Bounds x="1990" y="1010" width="170" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_NoOpportunity_di" bpmnElement="EndEvent_NoOpportunity">
+        <dc:Bounds x="1307" y="1082" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1286" y="1118" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_SaleDeferred_di" bpmnElement="EndEvent_SaleDeferred">
+        <dc:Bounds x="1907" y="1142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1899" y="1178" width="52" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_SaleOrdered_di" bpmnElement="EndEvent_SaleOrdered">
+        <dc:Bounds x="2200" y="1032" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2174" y="1068" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_PriceHistory_ReadWrite_di" bpmnElement="Association_PriceHistory_ReadWrite">
+        <di:waypoint x="1130" y="940" />
+        <di:waypoint x="1130" y="770" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_Recommendation_Output_di" bpmnElement="Association_Recommendation_Output">
+        <di:waypoint x="1590" y="980" />
+        <di:waypoint x="1739" y="770" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_Recommendation_Input_di" bpmnElement="Association_Recommendation_Input">
+        <di:waypoint x="1745" y="770" />
+        <di:waypoint x="1745" y="1010" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SubFlow_1_di" bpmnElement="SubFlow_1">
+        <di:waypoint x="716" y="980" />
+        <di:waypoint x="760" y="980" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SubFlow_2_di" bpmnElement="SubFlow_2">
+        <di:waypoint x="950" y="980" />
+        <di:waypoint x="1010" y="980" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SubFlow_3_di" bpmnElement="SubFlow_3">
+        <di:waypoint x="1250" y="980" />
+        <di:waypoint x="1300" y="980" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SubFlow_5_di" bpmnElement="SubFlow_5">
+        <di:waypoint x="1350" y="980" />
+        <di:waypoint x="1390" y="980" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1361" y="955" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SubFlow_4_di" bpmnElement="SubFlow_4">
+        <di:waypoint x="1325" y="1005" />
+        <di:waypoint x="1325" y="1082" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1332" y="1034" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SubFlow_6_di" bpmnElement="SubFlow_6">
+        <di:waypoint x="1490" y="1020" />
+        <di:waypoint x="1490" y="1050" />
+        <di:waypoint x="1640" y="1050" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SubFlow_7_di" bpmnElement="SubFlow_7">
+        <di:waypoint x="1850" y="1050" />
+        <di:waypoint x="1900" y="1050" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SubFlow_9_di" bpmnElement="SubFlow_9">
+        <di:waypoint x="1925" y="1075" />
+        <di:waypoint x="1925" y="1142" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1932" y="1098" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SubFlow_8_di" bpmnElement="SubFlow_8">
+        <di:waypoint x="1950" y="1050" />
+        <di:waypoint x="1990" y="1050" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1961" y="1025" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SubFlow_10_di" bpmnElement="SubFlow_10">
+        <di:waypoint x="2160" y="1050" />
+        <di:waypoint x="2200" y="1050" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="890" y="580" />
+        <di:waypoint x="940" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="976" y="580" />
+        <di:waypoint x="1020" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13_di" bpmnElement="Flow_13">
+        <di:waypoint x="2300" y="580" />
+        <di:waypoint x="2400" y="580" />
+        <di:waypoint x="2400" y="800" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14_di" bpmnElement="Flow_14">
+        <di:waypoint x="2500" y="840" />
+        <di:waypoint x="2542" y="840" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
+        <di:waypoint x="2045" y="555" />
+        <di:waypoint x="2045" y="510" />
+        <di:waypoint x="2560" y="510" />
+        <di:waypoint x="2560" y="822" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2020" y="526" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
+        <di:waypoint x="2070" y="580" />
+        <di:waypoint x="2110" y="580" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2081" y="555" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
+        <di:waypoint x="1970" y="580" />
+        <di:waypoint x="2020" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
+        <di:waypoint x="1720" y="580" />
+        <di:waypoint x="1770" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="1460" y="580" />
+        <di:waypoint x="1510" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1200" y="580" />
+        <di:waypoint x="1250" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="615" y="405" />
+        <di:waypoint x="615" y="670" />
+        <di:waypoint x="1110" y="670" />
+        <di:waypoint x="1110" y="620" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="621" y="527" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="640" y="380" />
+        <di:waypoint x="800" y="380" />
+        <di:waypoint x="800" y="540" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="807" y="451" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="530" y="380" />
+        <di:waypoint x="590" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="276" y="380" />
+        <di:waypoint x="340" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_RequestPrices_di" bpmnElement="MessageFlow_RequestPrices">
+        <di:waypoint x="910" y="940" />
+        <di:waypoint x="910" y="180" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="921" y="870" width="58" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_ReceivePrices_di" bpmnElement="MessageFlow_ReceivePrices">
+        <di:waypoint x="1210" y="180" />
+        <di:waypoint x="1210" y="940" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1222" y="205.99999999999977" width="75" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_1dyeb7c_di" bpmnElement="DataOutputAssociation_1dyeb7c">
+        <di:waypoint x="1630" y="540" />
+        <di:waypoint x="1630" y="415" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssociation_0pwn3a9_di" bpmnElement="DataInputAssociation_0pwn3a9">
+        <di:waypoint x="1605" y="408" />
+        <di:waypoint x="1480" y="500" />
+        <di:waypoint x="1480" y="670" />
+        <di:waypoint x="1130" y="940" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssociation_0t3nmdk_di" bpmnElement="DataInputAssociation_0t3nmdk">
+        <di:waypoint x="1655" y="401" />
+        <di:waypoint x="1870" y="500" />
+        <di:waypoint x="1870" y="540" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
