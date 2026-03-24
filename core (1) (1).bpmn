@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_Agro" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.13.1">
+  <bpmn:collaboration id="Collaboration_Agro">
+    <bpmn:participant id="Participant_Agro" name="Zarządzanie Produkcją Agrotechniczną" processRef="Process_Agro" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Agro" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Agro">
+      <bpmn:lane id="Lane_System" name="System Centralny (Algorytmy)">
+        <bpmn:flowNodeRef>StartEvent_Dane</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AnalizaSystem</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Zakonczone</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Raport</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Sync</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Alert</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Zarzadca" name="Zarządca / Agronom">
+        <bpmn:flowNodeRef>Task_Planowanie</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Dispatching</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Operator" name="Operator (Aplikacja Offline)">
+        <bpmn:flowNodeRef>Task_Realizacja</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Scouting</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Zakonczenie</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Scouting</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_Dane" name="Nowe dane z satelit / Potrzeba zabiegu">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_AnalizaSystem" name="Przetwórz dane (NDVI, plonowanie, gleba)">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_Planowanie" name="Zaplanuj zabieg i mapy zmiennego dawkowania (VRA)">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_Dispatching" name="Dispatching: Przypisz paczkę pracy (Operator+Maszyna+Pole)">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_Dane" targetRef="Task_AnalizaSystem" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_AnalizaSystem" targetRef="Task_Planowanie" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_Planowanie" targetRef="Task_Dispatching" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_Dispatching" targetRef="Task_Sync" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_Sync" targetRef="Task_Realizacja" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Task_Realizacja" targetRef="Gateway_Scouting" />
+    <bpmn:sequenceFlow id="Flow_Alert" sourceRef="Task_Scouting" targetRef="Task_Alert" />
+    <bpmn:sequenceFlow id="Flow_BackToEnd" sourceRef="Task_Alert" targetRef="Task_Zakonczenie" />
+    <bpmn:sequenceFlow id="Flow_Zakoncz_Raport" sourceRef="Task_Zakonczenie" targetRef="Task_Raport" />
+    <bpmn:sequenceFlow id="Flow_End" sourceRef="Task_Raport" targetRef="EndEvent_Zakonczone" />
+    <bpmn:sequenceFlow id="Flow_Tak" name="TAK" sourceRef="Gateway_Scouting" targetRef="Task_Scouting" />
+    <bpmn:sequenceFlow id="Flow_Nie" name="NIE" sourceRef="Gateway_Scouting" targetRef="Task_Zakonczenie" />
+    <bpmn:endEvent id="EndEvent_Zakonczone" name="Zabieg i raportowanie zakończone">
+      <bpmn:incoming>Flow_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Task_Raport" name="Przetwórz raport z realizacji do analizy rentowności">
+      <bpmn:incoming>Flow_Zakoncz_Raport</bpmn:incoming>
+      <bpmn:outgoing>Flow_End</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_Realizacja" name="Odbierz zadanie i realizuj zabieg w polu">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_Sync" name="Synchronizuj zadanie z aplikacją mobilną (Offline Ready)">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_Scouting" name="Czy zauważono problem (szkodnik, choroba)?">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_Tak</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Nie</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_Alert" name="Zaktualizuj mapę zagrożeń i wyślij alert do Agronoma">
+      <bpmn:incoming>Flow_Alert</bpmn:incoming>
+      <bpmn:outgoing>Flow_BackToEnd</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_Zakonczenie" name="Zakończ zabieg w aplikacji (Raport)">
+      <bpmn:incoming>Flow_Nie</bpmn:incoming>
+      <bpmn:incoming>Flow_BackToEnd</bpmn:incoming>
+      <bpmn:outgoing>Flow_Zakoncz_Raport</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_Scouting" name="Zwiad: Zrób zdjęcie i przypnij znacznik GPS">
+      <bpmn:incoming>Flow_Tak</bpmn:incoming>
+      <bpmn:outgoing>Flow_Alert</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Agro">
+    <bpmndi:BPMNPlane id="BPMNPlane_Agro" bpmnElement="Collaboration_Agro">
+      <bpmndi:BPMNShape id="Participant_Agro_di" bpmnElement="Participant_Agro" isHorizontal="true">
+        <dc:Bounds x="120" y="80" width="1130" height="520" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Operator_di" bpmnElement="Lane_Operator" isHorizontal="true">
+        <dc:Bounds x="150" y="380" width="1100" height="220" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Zarzadca_di" bpmnElement="Lane_Zarzadca" isHorizontal="true">
+        <dc:Bounds x="150" y="230" width="1100" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_System_di" bpmnElement="Lane_System" isHorizontal="true">
+        <dc:Bounds x="150" y="80" width="1100" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_Dane_di" bpmnElement="StartEvent_Dane">
+        <dc:Bounds x="200" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="177" y="175" width="83" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AnalizaSystem_di" bpmnElement="Task_AnalizaSystem">
+        <dc:Bounds x="280" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Planowanie_di" bpmnElement="Task_Planowanie">
+        <dc:Bounds x="280" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Dispatching_di" bpmnElement="Task_Dispatching">
+        <dc:Bounds x="430" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Zakonczone_di" bpmnElement="EndEvent_Zakonczone">
+        <dc:Bounds x="1182" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1169" y="175" width="64" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Raport_di" bpmnElement="Task_Raport">
+        <dc:Bounds x="1030" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Realizacja_di" bpmnElement="Task_Realizacja">
+        <dc:Bounds x="580" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Sync_di" bpmnElement="Task_Sync">
+        <dc:Bounds x="580" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Scouting_di" bpmnElement="Gateway_Scouting" isMarkerVisible="true">
+        <dc:Bounds x="715" y="435" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="702" y="390" width="78" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Alert_di" bpmnElement="Task_Alert">
+        <dc:Bounds x="810" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Zakonczenie_di" bpmnElement="Task_Zakonczenie">
+        <dc:Bounds x="940" y="490" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Scouting_di" bpmnElement="Task_Scouting">
+        <dc:Bounds x="810" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="236" y="150" />
+        <di:waypoint x="280" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="330" y="190" />
+        <di:waypoint x="330" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="380" y="300" />
+        <di:waypoint x="430" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="480" y="260" />
+        <di:waypoint x="480" y="150" />
+        <di:waypoint x="580" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="630" y="190" />
+        <di:waypoint x="630" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="680" y="460" />
+        <di:waypoint x="715" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Alert_di" bpmnElement="Flow_Alert">
+        <di:waypoint x="860" y="420" />
+        <di:waypoint x="860" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_BackToEnd_di" bpmnElement="Flow_BackToEnd">
+        <di:waypoint x="910" y="150" />
+        <di:waypoint x="990" y="150" />
+        <di:waypoint x="990" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Zakoncz_Raport_di" bpmnElement="Flow_Zakoncz_Raport">
+        <di:waypoint x="1040" y="530" />
+        <di:waypoint x="1080" y="530" />
+        <di:waypoint x="1080" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_End_di" bpmnElement="Flow_End">
+        <di:waypoint x="1130" y="150" />
+        <di:waypoint x="1182" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Tak_di" bpmnElement="Flow_Tak">
+        <di:waypoint x="765" y="460" />
+        <di:waypoint x="810" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="774" y="443" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Nie_di" bpmnElement="Flow_Nie">
+        <di:waypoint x="740" y="485" />
+        <di:waypoint x="740" y="530" />
+        <di:waypoint x="940" y="530" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="775" y="512" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
