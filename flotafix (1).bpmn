@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_Flota_V2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.13.1">
+  <bpmn:collaboration id="Collaboration_Flota">
+    <bpmn:participant id="Participant_ZarzadzanieFlota" name="Zarządzanie Flotą i Utrzymanie Ruchu (V2)" processRef="Process_Flota" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Flota" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_Maszyna" name="Maszyna (ISOBUS / Telematyka)">
+        <bpmn:flowNodeRef>Task_WyslijDane</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_Cykl</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_System" name="System Centralny (Chmura)">
+        <bpmn:flowNodeRef>Task_ZapiszZaktualizuj</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_LimitMotogodzin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_KoniecCykul</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_WyslijAlert</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_DB_Update</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_PrzegladZakonczony</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Zarzadca" name="Zarządca / Agronom">
+        <bpmn:flowNodeRef>Task_ZaplanujPrzeglad</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ZatwierdzPrzeglad</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Mechanik" name="Mechanik / Serwis">
+        <bpmn:flowNodeRef>Task_WykonajPrzeglad</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:serviceTask id="Task_WyslijDane" name="Pobierz dane telemetryczne">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_ZapiszZaktualizuj" name="Zapisz dane i zaktualizuj mapę">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_LimitMotogodzin" name="Przekroczono limit?">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_Nie</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Tak</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_Cykl" targetRef="Task_WyslijDane" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_WyslijDane" targetRef="Task_ZapiszZaktualizuj" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_ZapiszZaktualizuj" targetRef="Gateway_LimitMotogodzin" />
+    <bpmn:sequenceFlow id="Flow_Nie" name="NIE" sourceRef="Gateway_LimitMotogodzin" targetRef="EndEvent_KoniecCykul" />
+    <bpmn:sequenceFlow id="Flow_Tak" name="TAK" sourceRef="Gateway_LimitMotogodzin" targetRef="Task_WyslijAlert" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_WyslijAlert" targetRef="Task_ZaplanujPrzeglad" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_ZaplanujPrzeglad" targetRef="Task_WykonajPrzeglad" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Task_WykonajPrzeglad" targetRef="Task_ZatwierdzPrzeglad" />
+    <bpmn:sequenceFlow id="Flow_To_Update" sourceRef="Task_ZatwierdzPrzeglad" targetRef="Task_DB_Update" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Task_DB_Update" targetRef="EndEvent_PrzegladZakonczony" />
+    <bpmn:endEvent id="EndEvent_KoniecCykul" name="Praca bez zakłóceń">
+      <bpmn:incoming>Flow_Nie</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Task_WyslijAlert" name="Wygeneruj alert serwisowy (Push/Email)">
+      <bpmn:incoming>Flow_Tak</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_ZaplanujPrzeglad" name="Wyznacz termin i serwisanta">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:manualTask id="Task_WykonajPrzeglad" name="Wykonaj fizyczny przegląd i wymianę płynów">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:userTask id="Task_ZatwierdzPrzeglad" name="Zatwierdź raport z przeglądu">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_To_Update</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_DB_Update" name="Zaktualizuj licznik i historię w DB">
+      <bpmn:incoming>Flow_To_Update</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_PrzegladZakonczony" name="Maszyna gotowa do pracy">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="StartEvent_Cykl" name="Cykliczne pomiary">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1" />
+    </bpmn:startEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_Flota">
+      <bpmndi:BPMNShape id="Participant_ZarzadzanieFlota_di" bpmnElement="Participant_ZarzadzanieFlota" isHorizontal="true">
+        <dc:Bounds x="120" y="80" width="1198" height="600" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Mechanik_di" bpmnElement="Lane_Mechanik" isHorizontal="true">
+        <dc:Bounds x="150" y="500" width="1168" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Zarzadca_di" bpmnElement="Lane_Zarzadca" isHorizontal="true">
+        <dc:Bounds x="150" y="350" width="1168" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_System_di" bpmnElement="Lane_System" isHorizontal="true">
+        <dc:Bounds x="150" y="200" width="1168" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Maszyna_di" bpmnElement="Lane_Maszyna" isHorizontal="true">
+        <dc:Bounds x="150" y="80" width="1168" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_WyslijDane_di" bpmnElement="Task_WyslijDane">
+        <dc:Bounds x="290" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ZapiszZaktualizuj_di" bpmnElement="Task_ZapiszZaktualizuj">
+        <dc:Bounds x="290" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_LimitMotogodzin_di" bpmnElement="Gateway_LimitMotogodzin" isMarkerVisible="true">
+        <dc:Bounds x="445" y="245" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="436" y="295.5" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_KoniecCykul_di" bpmnElement="EndEvent_KoniecCykul">
+        <dc:Bounds x="642" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="635" y="238" width="50" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_WyslijAlert_di" bpmnElement="Task_WyslijAlert">
+        <dc:Bounds x="610" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ZaplanujPrzeglad_di" bpmnElement="Task_ZaplanujPrzeglad">
+        <dc:Bounds x="700" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_WykonajPrzeglad_di" bpmnElement="Task_WykonajPrzeglad">
+        <dc:Bounds x="840" y="540" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ZatwierdzPrzeglad_di" bpmnElement="Task_ZatwierdzPrzeglad">
+        <dc:Bounds x="950" y="385" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_DB_Update_di" bpmnElement="Task_DB_Update">
+        <dc:Bounds x="1040" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_PrzegladZakonczony_di" bpmnElement="EndEvent_PrzegladZakonczony">
+        <dc:Bounds x="1182" y="252" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1168" y="288" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_Cykl_di" bpmnElement="StartEvent_Cykl">
+        <dc:Bounds x="222" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="195" y="158" width="90" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="258" y="140" />
+        <di:waypoint x="290" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="340" y="180" />
+        <di:waypoint x="340" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="390" y="270" />
+        <di:waypoint x="445" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Nie_di" bpmnElement="Flow_Nie">
+        <di:waypoint x="470" y="245" />
+        <di:waypoint x="470" y="220" />
+        <di:waypoint x="642" y="220" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="548" y="203" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Tak_di" bpmnElement="Flow_Tak">
+        <di:waypoint x="495" y="270" />
+        <di:waypoint x="553" y="270" />
+        <di:waypoint x="553" y="310" />
+        <di:waypoint x="610" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="569" y="295" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="660" y="350" />
+        <di:waypoint x="660" y="420" />
+        <di:waypoint x="700" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="750" y="460" />
+        <di:waypoint x="750" y="580" />
+        <di:waypoint x="840" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="940" y="580" />
+        <di:waypoint x="1000" y="580" />
+        <di:waypoint x="1000" y="465" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_To_Update_di" bpmnElement="Flow_To_Update">
+        <di:waypoint x="1010" y="385" />
+        <di:waypoint x="1010" y="330" />
+        <di:waypoint x="1090" y="330" />
+        <di:waypoint x="1090" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1140" y="270" />
+        <di:waypoint x="1182" y="270" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
