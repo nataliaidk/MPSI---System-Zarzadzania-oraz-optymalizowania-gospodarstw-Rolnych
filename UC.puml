@@ -1,5 +1,6 @@
 @startuml
 left to right direction
+
 skinparam packageStyle rectangle
 skinparam usecase {
   BackgroundColor #F8F8F8
@@ -9,15 +10,15 @@ skinparam usecase {
 
 actor "Pasażer" as Pasazer
 actor "Przewoźnik" as Przewoznik
-actor "Konduktor" as Konduktor
 actor "Dyspozytor" as Dyspozytor
+actor "Kontroler" as Kontroler
 
 actor "Operator płatności" as OperatorPlatnosci
-actor "System centralny" as SystemCentralny
 actor "System pozycjonowania" as SystemPozycjonowania
 actor "Tablice informacyjne" as TabliceInformacyjne
+actor "System centralny" as SystemCentralny
 
-rectangle "RailTravel" {
+rectangle "RailTravel — Serwis Zarządzania Podróżą Kolejową" {
 
   package "Sprzedaż biletów i rezerwacja miejsc" {
     usecase "UC-04\nZakup biletu\nwielo-przewoźnikowego" as UC04
@@ -30,67 +31,65 @@ rectangle "RailTravel" {
     usecase "UC-08\nOtrzymanie powiadomienia\no opóźnieniu" as UC08
   }
 
-  package "Kontrola biletów" {
-    usecase "UC-09\nOkaż bilet\nz kodem QR" as UC09
-    usecase "UC-10\nZeskanuj kod QR" as UC10
-    usecase "UC-11\nSprawdź ważność biletu" as UC11
-    usecase "UC-12\nPotwierdź ważność biletu" as UC12
-    usecase "UC-13\nUtwórz raport\nz kontroli" as UC13
+  package "Edycja rozkładu jazdy" {
+    usecase "UC-09\nEdycja rozkładu jazdy" as UC09
+    usecase "UC-10\nWprowadzenie komunikatów\no awariach" as UC10_Awaria
   }
 
-  package "Edycja rozkładu jazdy" {
-    usecase "UC-14\nEdycja rozkładu jazdy" as UC14
-    usecase "UC-15\nWprowadzenie komunikatów\no awariach" as UC15
+  package "Kontrola biletów" {
+    usecase "UC-10\nSkanowanie kodu QR biletu" as UC10_QR
+    usecase "UC-11\nWyświetlenie statusu biletu" as UC11
+    usecase "UC-12\nGenerowanie raportów sprzedaży\ni kontroli biletów" as UC12
   }
 }
 
-' --- Sprzedaż i rezerwacja ---
+' === Sprzedaż biletów i rezerwacja miejsc ===
 Pasazer --> UC04
 Pasazer --> UC05
 Przewoznik --> UC06
 
-UC04 .> UC05 : <<include>>\nopcjonalnie, gdy pasażer wybiera miejsce
+UC04 .> UC05 : <<extend>>\ngdy pasażer wybiera miejsce
 UC04 --> OperatorPlatnosci : autoryzacja płatności
-UC04 --> SystemCentralny : wystawienie biletu / zapis transakcji
+UC04 --> SystemCentralny : zapis zamówienia i biletu
 
-UC05 --> SystemCentralny : blokada i rezerwacja miejsca
+UC05 --> SystemCentralny : blokada / rezerwacja miejsca
 UC06 --> SystemCentralny : aktualizacja oferty sprzedażowej
 
-' --- Śledzenie opóźnień ---
+' === Śledzenie opóźnień ===
 Pasazer --> UC07
 Pasazer --> UC08
 
-UC07 --> SystemPozycjonowania : pobranie lokalizacji
-UC07 --> SystemCentralny : rozkład i status kursu
+UC07 --> SystemPozycjonowania : pobranie lokalizacji pociągu
+UC07 --> SystemCentralny : rozkład i dane kursu
 
-UC08 .> UC07 : <<extend>>\ngdy wykryto istotne opóźnienie
-UC08 --> SystemCentralny : identyfikacja pasażerów / podróży
+UC08 .> UC07 : <<include>>\ndane o opóźnieniu
+UC08 --> SystemCentralny : identyfikacja pasażerów
 
-' --- Kontrola biletów ---
-Pasazer --> UC09
-Konduktor --> UC10
-Konduktor --> UC11
-Konduktor --> UC12
-Konduktor --> UC13
+' === Edycja rozkładu jazdy ===
+Dyspozytor --> UC09
+Dyspozytor --> UC10_Awaria
 
-UC09 .> UC10 : <<include>>
-UC10 .> UC11 : <<include>>
-UC12 .> UC11 : <<extend>>\ngdy bilet jest ważny
-UC13 .> UC11 : <<extend>>\ngdy kontrola jest kończona lub raportowana
+UC09 --> SystemPozycjonowania : mapa i aktualna pozycja pociągu
+UC09 --> SystemCentralny : aktualizacja rozkładu
 
-UC11 --> SystemCentralny : walidacja biletu
-UC12 --> SystemCentralny : aktualizacja statusu biletu
-UC13 --> SystemCentralny : zapis raportu kontroli
+UC10_Awaria .> UC09 : <<extend>>\ngdy zmiana wymaga komunikatu
+UC10_Awaria --> SystemCentralny : zapis komunikatu
+UC10_Awaria --> TabliceInformacyjne : publikacja komunikatu
+UC10_Awaria .> UC08 : <<include>>\npowiadomienie pasażerów
 
-' --- Edycja rozkładu jazdy ---
-Dyspozytor --> UC14
-Dyspozytor --> UC15
+' === Kontrola biletów ===
+Kontroler --> UC10_QR
+Kontroler --> UC11
+Przewoznik --> UC12
 
-UC15 .> UC14 : <<extend>>\ngdy edycja lub awaria wymaga komunikatu
-UC14 --> SystemPozycjonowania : mapa i pozycje pociągów
-UC14 --> SystemCentralny : aktualizacja rozkładu
+Pasazer --> UC10_QR : okazuje bilet
 
-UC15 --> SystemCentralny : identyfikacja pasażerów i zapis komunikatu
-UC15 --> TabliceInformacyjne : publikacja komunikatu
+UC10_QR .> UC11 : <<include>>\npo odczycie kodu QR
+UC10_QR --> SystemCentralny : weryfikacja biletu / lokalna baza
+
+UC11 --> SystemCentralny : zapis historii skanowania
+UC12 .> UC10_QR : <<include>>\ndane skanowań
+UC12 .> UC11 : <<include>>\nstatusy biletów
+UC12 --> SystemCentralny : dane sprzedaży i kontroli
 
 @enduml
