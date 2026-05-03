@@ -1,0 +1,96 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F8F8F8
+  BorderColor #555555
+  ArrowColor #333333
+}
+
+actor "Pasażer" as Pasazer
+actor "Przewoźnik" as Przewoznik
+actor "Konduktor" as Konduktor
+actor "Dyspozytor" as Dyspozytor
+
+actor "Operator płatności" as OperatorPlatnosci
+actor "System centralny" as SystemCentralny
+actor "System pozycjonowania" as SystemPozycjonowania
+actor "Tablice informacyjne" as TabliceInformacyjne
+
+rectangle "RailTravel" {
+
+  package "Sprzedaż biletów i rezerwacja miejsc" {
+    usecase "UC-04\nZakup biletu\nwielo-przewoźnikowego" as UC04
+    usecase "UC-05\nWybór i rezerwacja miejsca\nna planie wagonu" as UC05
+    usecase "UC-06\nZarządzanie ofertą\nprzewozową przez przewoźnika" as UC06
+  }
+
+  package "Śledzenie opóźnień" {
+    usecase "UC-07\nSprawdzenie aktualnego\nopóźnienia pociągu" as UC07
+    usecase "UC-08\nOtrzymanie powiadomienia\no opóźnieniu" as UC08
+  }
+
+  package "Kontrola biletów" {
+    usecase "UC-09\nOkaż bilet\nz kodem QR" as UC09
+    usecase "UC-10\nZeskanuj kod QR" as UC10
+    usecase "UC-11\nSprawdź ważność biletu" as UC11
+    usecase "UC-12\nPotwierdź ważność biletu" as UC12
+    usecase "UC-13\nUtwórz raport\nz kontroli" as UC13
+  }
+
+  package "Edycja rozkładu jazdy" {
+    usecase "UC-14\nEdycja rozkładu jazdy" as UC14
+    usecase "UC-15\nWprowadzenie komunikatów\no awariach" as UC15
+  }
+}
+
+' --- Sprzedaż i rezerwacja ---
+Pasazer --> UC04
+Pasazer --> UC05
+Przewoznik --> UC06
+
+UC04 .> UC05 : <<include>>\nopcjonalnie, gdy pasażer wybiera miejsce
+UC04 --> OperatorPlatnosci : autoryzacja płatności
+UC04 --> SystemCentralny : wystawienie biletu / zapis transakcji
+
+UC05 --> SystemCentralny : blokada i rezerwacja miejsca
+UC06 --> SystemCentralny : aktualizacja oferty sprzedażowej
+
+' --- Śledzenie opóźnień ---
+Pasazer --> UC07
+Pasazer --> UC08
+
+UC07 --> SystemPozycjonowania : pobranie lokalizacji
+UC07 --> SystemCentralny : rozkład i status kursu
+
+UC08 .> UC07 : <<extend>>\ngdy wykryto istotne opóźnienie
+UC08 --> SystemCentralny : identyfikacja pasażerów / podróży
+
+' --- Kontrola biletów ---
+Pasazer --> UC09
+Konduktor --> UC10
+Konduktor --> UC11
+Konduktor --> UC12
+Konduktor --> UC13
+
+UC09 .> UC10 : <<include>>
+UC10 .> UC11 : <<include>>
+UC12 .> UC11 : <<extend>>\ngdy bilet jest ważny
+UC13 .> UC11 : <<extend>>\ngdy kontrola jest kończona lub raportowana
+
+UC11 --> SystemCentralny : walidacja biletu
+UC12 --> SystemCentralny : aktualizacja statusu biletu
+UC13 --> SystemCentralny : zapis raportu kontroli
+
+' --- Edycja rozkładu jazdy ---
+Dyspozytor --> UC14
+Dyspozytor --> UC15
+
+UC15 .> UC14 : <<extend>>\ngdy edycja lub awaria wymaga komunikatu
+UC14 --> SystemPozycjonowania : mapa i pozycje pociągów
+UC14 --> SystemCentralny : aktualizacja rozkładu
+
+UC15 --> SystemCentralny : identyfikacja pasażerów i zapis komunikatu
+UC15 --> TabliceInformacyjne : publikacja komunikatu
+
+@enduml
