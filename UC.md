@@ -1,10 +1,59 @@
 # Opis przypadków użycia systemu RailTravel
 
-## 4.2 Sprzedaż biletów i rezerwacja miejsc
+## 4.1 Rozkład jazdy i planowanie podróży
+
+### UC-03: Edycja rozkładu jazdy
+
+**Powiązana historia użytkownika:**  
+Jako przewoźnik chcę edytować rozkład jazdy, aby zmiany były natychmiast widoczne w systemie.
+
+**Główny aktor:**  
+Przewoźnik / Dyspozytor
+
+**Warunki wstępne:**
+
+- Użytkownik jest zalogowany do systemu z odpowiednimi uprawnieniami.
+- Nastąpiła potrzeba zmiany rozkładu jazdy, np. awaria, zamknięcie toru, zmiana operacyjna lub korekta planu kursowania.
+- System posiada aktualne dane rozkładowe oraz informacje o trasach i kursach.
+
+**Przepływ główny:**
+
+1. Użytkownik wybiera w systemie opcję edycji rozkładu jazdy.
+2. System wyświetla listę aktywnych tras, kursów i pociągów.
+3. Użytkownik wyszukuje i wybiera kurs wymagający zmiany.
+4. System wyświetla aktualny rozkład jazdy dla wybranego kursu.
+5. Użytkownik edytuje parametry rozkładu, np. godzinę odjazdu, godzinę przyjazdu, opóźnienie, objazd lub pominięcie stacji.
+6. System weryfikuje zmodyfikowany rozkład pod kątem konfliktów czasowych na tej samej linii.
+7. Użytkownik zatwierdza zmiany.
+8. System zapisuje zmianę w bazie danych wraz z datą i autorem modyfikacji.
+9. System publikuje aktualizację rozkładu tak, aby była widoczna dla pasażerów w czasie poniżej 60 sekund.
+
+**Przepływy alternatywne:**
+
+**A1: Wykrycie konfliktu w rozkładzie**
+
+1. System wykrywa konflikt czasowy na tej samej linii.
+2. System blokuje zapis zmiany.
+3. System informuje użytkownika o przyczynie konfliktu.
+4. Użytkownik koryguje dane i ponawia próbę zapisu.
+
+**A2: Całkowite odwołanie kursu**
+
+1. Użytkownik zamiast edycji trasy oznacza kurs jako odwołany.
+2. System usuwa kurs z aktywnych rozkładów.
+3. System zapisuje informację o odwołaniu kursu.
+4. System publikuje zmianę w systemie pasażerskim.
+
+**Warunki końcowe:**
+
+- **Sukces:** Rozkład jazdy zostaje zaktualizowany, a zmiana jest widoczna dla pasażerów w czasie poniżej 60 sekund.
+- **Błąd:** Rozkład jazdy nie zostaje zmieniony, a użytkownik otrzymuje informację o przyczynie niepowodzenia.
 
 ---
 
-## UC-04: Zakup biletu wielo-przewoźnikowego
+## 4.2 Sprzedaż biletów i rezerwacja miejsc
+
+### UC-04: Zakup biletu wielo-przewoźnikowego
 
 **Powiązana historia użytkownika:**  
 Jako pasażer chcę kupić bilet u wielu przewoźników w jednej transakcji, aby ułatwić podróż wielo-przewoźnikową.
@@ -22,11 +71,11 @@ Pasażer
 1. Pasażer dodaje wybrane połączenie, które może zawierać wielu przewoźników, do koszyka.
 2. System wyświetla podsumowanie koszyka z listą wszystkich odcinków i łączną kwotą.
 3. Pasażer wybiera opcję „Przejdź do płatności”.
-4. System przekierowuje do zewnętrznego operatora płatności.
+4. System przekierowuje pasażera do zewnętrznego operatora płatności.
 5. Pasażer dokonuje płatności za całe zamówienie.
 6. System otrzymuje potwierdzenie autoryzacji płatności.
 7. System generuje jeden zbiorczy bilet elektroniczny lub pakiet biletów pod jednym identyfikatorem.
-8. System wysyła bilet na adres e-mail pasażera i zapisuje go w jego koncie.
+8. System wysyła bilet na adres e-mail pasażera i zapisuje go na jego koncie.
 
 **Przepływy alternatywne:**
 
@@ -39,23 +88,25 @@ Pasażer
 **A2: Wygaśnięcie sesji lub rezerwacji w trakcie płatności**
 
 1. Pasażer zwleka z płatnością zbyt długo.
-2. System informuje o wygaśnięciu czasu na zakup i zwalnia zablokowane miejsca lub bilety.
-3. Pasażer zostaje przekierowany do strony głównej wyszukiwarki.
+2. System informuje o wygaśnięciu czasu na zakup.
+3. System zwalnia zablokowane miejsca lub bilety.
+4. Pasażer zostaje przekierowany do strony głównej wyszukiwarki.
 
 **A3: Błąd komunikacji z API jednego z przewoźników**
 
 1. System nie może potwierdzić rezerwacji u jednego z partnerów.
 2. System automatycznie inicjuje zwrot środków, jeśli zostały pobrane.
-3. Pasażer otrzymuje komunikat o braku możliwości wystawienia biletu zbiorczego i prośbę o kontakt z biurem obsługi.
+3. Pasażer otrzymuje komunikat o braku możliwości wystawienia biletu zbiorczego.
+4. System informuje pasażera o konieczności kontaktu z biurem obsługi.
 
 **Warunki końcowe:**
 
 - **Sukces:** Pasażer posiada ważny dokument podróży, np. plik PDF lub kod QR, środki zostały przekazane przewoźnikom, a transakcja widnieje w historii zamówień.
-- **Błąd:** Środki nie zostają pobrane lub zostają zwrócone, a miejsca w pociągach pozostają wolne w systemie sprzedaży.
+- **Błąd:** Środki nie zostają pobrane albo zostają zwrócone, a miejsca w pociągach pozostają wolne w systemie sprzedaży.
 
 ---
 
-## UC-05: Wybór i rezerwacja miejsca na planie wagonu
+### UC-05: Wybór i rezerwacja miejsca na planie wagonu
 
 **Powiązana historia użytkownika:**  
 Jako pasażer chcę wybrać miejsce na planie wagonu, aby dopasować komfort podróży.
@@ -72,8 +123,8 @@ Pasażer
 
 1. Pasażer wybiera opcję „Wybierz miejsce” przy konkretnym kursie.
 2. System wyświetla interaktywny schemat składu pociągu z podziałem na wagony i klasy.
-3. System oznacza miejsca zajęte jako nieaktywne i wolne jako możliwe do wyboru.
-4. Pasażer klika w ikonę wybranego wolnego miejsca.
+3. System oznacza miejsca zajęte jako nieaktywne, a miejsca wolne jako możliwe do wyboru.
+4. Pasażer klika ikonę wybranego wolnego miejsca.
 5. System wizualnie zatwierdza wybór i przypisuje numer miejsca do biletu w koszyku.
 6. Pasażer zatwierdza wybór przyciskiem „Potwierdź wybór miejsc”.
 7. System czasowo blokuje wybrane miejsca na czas trwania transakcji.
@@ -104,7 +155,7 @@ Pasażer
 
 ---
 
-## UC-06: Zarządzanie ofertą przewozową przez przewoźnika
+### UC-06: Zarządzanie ofertą przewozową przez przewoźnika
 
 **Powiązana historia użytkownika:**  
 Jako przewoźnik chcę dodawać i aktualizować ofertę przewozową, aby sprzedaż była aktualna.
@@ -125,7 +176,7 @@ Przewoźnik
 5. Przewoźnik zatwierdza zmiany przyciskiem „Zapisz i publikuj”.
 6. System weryfikuje kompletność danych, np. czy podano cenę i datę, oraz sprawdza, czy oferta nie jest duplikatem.
 7. System zapisuje zmiany w bazie danych.
-8. System aktualizuje ofertę w module sprzedaży, widoczną dla pasażerów w ciągu mniej niż 5 minut.
+8. System aktualizuje ofertę w module sprzedaży tak, aby była widoczna dla pasażerów w czasie poniżej 5 minut.
 
 **Przepływy alternatywne:**
 
@@ -135,10 +186,11 @@ Przewoźnik
 2. System podświetla pola z błędami na czerwono i blokuje przycisk „Zapisz”.
 3. Przewoźnik koryguje dane i ponawia próbę.
 
-**A2: Konflikt w rozkładzie jazdy**
+**A2: Konflikt w rozkładzie jazdy lub duplikacja oferty**
 
 1. System wykrywa, że na danej trasie o tej samej godzinie i tym samym numerze pociągu istnieje już aktywna oferta.
-2. System odrzuca zapis i wyświetla komunikat o konflikcie z istniejącym kursem.
+2. System odrzuca zapis.
+3. System wyświetla komunikat o konflikcie z istniejącym kursem.
 
 **A3: Usunięcie lub wyłączenie oferty z aktywną sprzedażą**
 
@@ -153,58 +205,9 @@ Przewoźnik
 
 ---
 
-## 4.3 Śledzenie opóźnień
+## 4.3 Informacje o opóźnieniach
 
----
-
-## UC-07: Sprawdzenie aktualnego opóźnienia pociągu
-
-**Powiązana historia użytkownika:**  
-Jako pasażer chcę sprawdzić aktualne opóźnienie mojego pociągu, aby wiedzieć, czy podróż przebiega zgodnie z planem.
-
-**Główny aktor:**  
-Pasażer
-
-**Warunki wstępne:**
-
-- Pasażer ma dostęp do aplikacji lub serwisu RailTravel.
-- Pasażer wybrał konkretną podróż lub wyszukał dany pociąg.
-- System posiada aktualny rozkład jazdy dla wybranego kursu.
-- System posiada ostatnie dane lokalizacyjne dla pociągu.
-
-**Przepływ główny:**
-
-1. Pasażer otwiera szczegóły wybranej podróży lub wyszukuje konkretny pociąg.
-2. System pobiera aktualne dane o lokalizacji pociągu z systemu pozycjonowania.
-3. System porównuje bieżącą lokalizację i czas przejazdu z rozkładem jazdy.
-4. System wylicza aktualne opóźnienie oraz przewidywany czas przyjazdu.
-5. System wyświetla pasażerowi status pociągu, aktualną lokalizację, wielkość opóźnienia i szacowany czas przyjazdu.
-6. Pasażer zapoznaje się z informacją o statusie podróży.
-
-**Przepływy alternatywne:**
-
-**A1: Brak aktualnych danych lokalizacyjnych**
-
-1. System informuje pasażera, że aktualna lokalizacja pociągu jest chwilowo niedostępna.
-2. System wyświetla ostatni znany status pociągu lub informację wynikającą z rozkładu jazdy.
-
-**A2: Nie odnaleziono wskazanego pociągu**
-
-1. System informuje pasażera, że nie znaleziono kursu spełniającego podane kryteria.
-2. Pasażer może ponowić wyszukiwanie.
-
-**A3: Pociąg nie jest opóźniony**
-
-1. System wyświetla informację, że pociąg jedzie zgodnie z rozkładem.
-2. Pasażer kończy sprawdzanie statusu podróży.
-
-**Warunki końcowe:**
-
-- Pasażer otrzymuje aktualną informację o statusie pociągu albo komunikat o braku dostępnych danych.
-
----
-
-## UC-08: Otrzymanie powiadomienia o opóźnieniu
+### UC-07: Otrzymanie powiadomienia o opóźnieniu
 
 **Powiązana historia użytkownika:**  
 Jako pasażer chcę otrzymywać powiadomienia o aktualnych opóźnieniach mojego pociągu w czasie rzeczywistym.
@@ -220,11 +223,12 @@ Pasażer
 
 **Przepływ główny:**
 
-1. System identyfikuje pasażerów powiązanych z danym kursem.
-2. System przygotowuje treść powiadomienia zawierającą numer pociągu, aktualną lokalizację lub stację, wielkość opóźnienia oraz przewidywany czas przyjazdu.
-3. System wysyła powiadomienie push lub SMS do pasażera.
-4. Pasażer odbiera powiadomienie.
-5. Pasażer otwiera komunikat i zapoznaje się ze szczegółami opóźnienia.
+1. System wykrywa opóźnienie pociągu przekraczające ustalony próg.
+2. System identyfikuje pasażerów powiązanych z danym kursem.
+3. System przygotowuje treść powiadomienia zawierającą numer pociągu, aktualną stację lub lokalizację, wielkość opóźnienia oraz przewidywany czas przyjazdu.
+4. System wysyła powiadomienie push lub SMS do pasażera.
+5. Pasażer odbiera powiadomienie.
+6. Pasażer otwiera komunikat i zapoznaje się ze szczegółami opóźnienia.
 
 **Przepływy alternatywne:**
 
@@ -240,395 +244,313 @@ Pasażer
 
 **Warunki końcowe:**
 
-- Pasażer zostaje poinformowany o opóźnieniu pociągu albo informacja pozostaje dostępna w szczegółach podróży.
+- **Sukces:** Pasażer zostaje poinformowany o opóźnieniu pociągu.
+- **Błąd:** Powiadomienie nie zostaje wysłane, ale informacja pozostaje dostępna w szczegółach podróży.
 
 ---
 
-## 4.4 Kontrola biletów
-
----
-
-## UC-09: Okaż bilet z kodem QR
+### UC-08: Monitorowanie geolokalizacji pociągów na mapie
 
 **Powiązana historia użytkownika:**  
-Jako pasażer chcę okazać bilet z kodem QR, aby umożliwić konduktorowi sprawdzenie ważności mojego biletu.
-
-**Główny aktor:**  
-Pasażer
-
-**Aktorzy wspierający:**  
-Konduktor
-
-**Warunki wstępne:**
-
-- Pasażer posiada bilet z kodem QR w formie elektronicznej lub papierowej.
-- Pasażer znajduje się w pociągu podczas kontroli biletów.
-- Konduktor rozpoczął procedurę kontroli biletów.
-
-**Przepływ główny:**
-
-1. Konduktor podchodzi do pasażera i prosi o okazanie biletu.
-2. Pasażer przygotowuje bilet z kodem QR.
-3. Pasażer okazuje kod QR konduktorowi.
-4. Konduktor kieruje czytnik lub urządzenie mobilne na kod QR.
-5. System umożliwia przejście do przypadku użycia „Zeskanuj kod QR”.
-6. Pasażer oczekuje na wynik kontroli biletu.
-
-**Przepływy alternatywne:**
-
-**A1: Pasażer nie może znaleźć biletu**
-
-1. Pasażer informuje konduktora, że nie może odnaleźć biletu.
-2. Konduktor informuje pasażera o konieczności okazania biletu lub podjęcia dalszych działań zgodnie z regulaminem przewoźnika.
-3. Proces kontroli dla tego pasażera może zostać oznaczony jako problematyczny.
-
-**A2: Kod QR jest nieczytelny**
-
-1. Pasażer okazuje bilet, ale kod QR jest uszkodzony, niewyraźny lub ekran urządzenia jest zbyt ciemny.
-2. Konduktor prosi pasażera o poprawienie widoczności kodu lub okazanie innej wersji biletu.
-3. Jeżeli kod nadal nie może zostać odczytany, konduktor podejmuje dalsze działania zgodnie z procedurą przewoźnika.
-
-**A3: Pasażer nie posiada biletu**
-
-1. Pasażer informuje, że nie posiada biletu.
-2. Konduktor informuje pasażera o konieczności podjęcia dalszych działań, np. zakupu biletu, uiszczenia opłaty dodatkowej lub zgłoszenia sytuacji do systemu.
-3. Proces nie przechodzi do skutecznej walidacji kodu QR.
-
-**Warunki końcowe:**
-
-- **Sukces:** Pasażer okazuje bilet z kodem QR, a konduktor może rozpocząć jego skanowanie.
-- **Błąd:** Bilet nie zostaje okazany albo kod QR nie nadaje się do odczytu.
-
----
-
-## UC-10: Zeskanuj kod QR
-
-**Powiązana historia użytkownika:**  
-Jako konduktor chcę zeskanować kod QR biletu, aby pobrać dane potrzebne do sprawdzenia ważności biletu.
-
-**Główny aktor:**  
-Konduktor
-
-**Aktorzy wspierający:**  
-Pasażer
-
-**Warunki wstępne:**
-
-- Pasażer okazał bilet z kodem QR.
-- Konduktor posiada urządzenie umożliwiające skanowanie kodów QR.
-- Aplikacja kontrolerska jest uruchomiona i gotowa do użycia.
-- Kod QR jest widoczny dla urządzenia skanującego.
-
-**Przepływ główny:**
-
-1. Konduktor wybiera w systemie opcję skanowania biletu.
-2. System uruchamia moduł skanowania kodu QR.
-3. Konduktor kieruje urządzenie na kod QR okazany przez pasażera.
-4. System odczytuje kod QR.
-5. System przetwarza zawarte w kodzie dane identyfikujące bilet.
-6. System przekazuje dane biletu do przypadku użycia „Sprawdź ważność biletu”.
-7. Konduktor oczekuje na wynik sprawdzenia biletu.
-
-**Przepływy alternatywne:**
-
-**A1: Nie udało się odczytać kodu QR**
-
-1. System nie rozpoznaje kodu QR.
-2. System wyświetla komunikat o nieudanym skanowaniu.
-3. Konduktor ponawia próbę skanowania.
-4. Jeżeli problem nadal występuje, konduktor może zastosować procedurę alternatywną zgodną z zasadami przewoźnika.
-
-**A2: Kod QR ma niepoprawny format**
-
-1. System odczytuje kod QR, ale nie rozpoznaje go jako poprawnego biletu.
-2. System informuje konduktora o błędnym lub nieobsługiwanym kodzie.
-3. Konduktor informuje pasażera o problemie z biletem.
-4. Proces może przejść do obsługi biletu nieważnego lub niepoprawnego.
-
-**A3: Brak połączenia z systemem centralnym**
-
-1. System odczytuje kod QR, ale nie może połączyć się z systemem centralnym.
-2. System informuje konduktora o problemie technicznym.
-3. Konduktor może ponowić próbę lub skorzystać z trybu awaryjnego, jeżeli jest dostępny.
-
-**Warunki końcowe:**
-
-- **Sukces:** Kod QR zostaje poprawnie odczytany, a dane biletu trafiają do procesu sprawdzania ważności.
-- **Błąd:** Kod QR nie zostaje odczytany albo nie zawiera poprawnych danych biletu.
-
----
-
-## UC-11: Sprawdź ważność biletu
-
-**Powiązana historia użytkownika:**  
-Jako konduktor chcę sprawdzić ważność biletu w systemie, aby ustalić, czy pasażer ma prawo kontynuować podróż na podstawie okazanego biletu.
-
-**Główny aktor:**  
-Konduktor
-
-**Aktorzy wspierający:**  
-Pasażer, system centralny
-
-**Warunki wstępne:**
-
-- Kod QR biletu został poprawnie zeskanowany.
-- System posiada dane identyfikujące bilet.
-- System ma dostęp do bazy danych biletów lub lokalnej kopii danych kontrolnych.
-- Bilet może zostać jednoznacznie zidentyfikowany na podstawie danych z kodu QR.
-
-**Przepływ główny:**
-
-1. System odbiera dane biletu ze skanera kodu QR.
-2. System wysyła żądanie sprawdzenia ważności biletu.
-3. System centralny wyszukuje bilet w bazie danych.
-4. System centralny sprawdza status biletu.
-5. System centralny weryfikuje, czy bilet dotyczy właściwego połączenia, daty, trasy i ewentualnych uprawnień.
-6. System zwraca wynik sprawdzenia do aplikacji konduktora.
-7. Konduktor otrzymuje informację, czy bilet jest ważny.
-8. W przypadku biletu ważnego proces może zostać rozszerzony o przypadek użycia „Potwierdź ważność biletu”.
-9. W przypadku zakończenia kontroli proces może zostać rozszerzony o przypadek użycia „Utwórz raport z kontroli”.
-
-**Przepływy alternatywne:**
-
-**A1: Bilet nie istnieje w systemie**
-
-1. System centralny nie znajduje biletu w bazie danych.
-2. System zwraca informację o braku biletu.
-3. Konduktor otrzymuje komunikat o niepoprawnym lub nieistniejącym bilecie.
-4. Konduktor informuje pasażera o konieczności podjęcia dalszych działań.
-
-**A2: Bilet jest nieważny**
-
-1. System odnajduje bilet, ale jego status wskazuje na nieważność.
-2. System zwraca informację o nieważnym bilecie.
-3. Konduktor informuje pasażera o wyniku kontroli.
-4. Konduktor podejmuje dalsze działania zgodnie z procedurą przewoźnika.
-
-**A3: Bilet jest ważny, ale niezgodny z aktualnym przejazdem**
-
-1. System odnajduje bilet.
-2. System wykrywa niezgodność, np. inną trasę, datę, pociąg lub klasę.
-3. System zwraca wynik negatywny z informacją o przyczynie.
-4. Konduktor informuje pasażera o wykrytej niezgodności.
-
-**A4: Błąd komunikacji z systemem centralnym**
-
-1. System nie otrzymuje odpowiedzi z systemem centralnym.
-2. System wyświetla komunikat o błędzie połączenia.
-3. Konduktor ponawia próbę sprawdzenia biletu lub korzysta z trybu awaryjnego, jeżeli jest dostępny.
-
-**Warunki końcowe:**
-
-- **Sukces:** System ustala ważność biletu i przekazuje wynik konduktorowi.
-- **Błąd:** Nie można jednoznacznie określić ważności biletu z powodu błędnych danych, braku biletu lub problemu technicznego.
-
----
-
-## UC-12: Potwierdź ważność biletu
-
-**Powiązana historia użytkownika:**  
-Jako konduktor chcę potwierdzić ważność biletu, aby oznaczyć bilet jako sprawdzony i zakończyć kontrolę danego pasażera wynikiem pozytywnym.
-
-**Główny aktor:**  
-Konduktor
-
-**Aktorzy wspierający:**  
-System centralny
-
-**Relacja z innym przypadkiem użycia:**  
-Przypadek użycia rozszerza „Sprawdź ważność biletu”.
-
-**Warunki wstępne:**
-
-- Bilet został poprawnie zeskanowany.
-- System sprawdził ważność biletu.
-- Wynik sprawdzenia biletu jest pozytywny.
-- Konduktor ma możliwość zatwierdzenia wyniku kontroli.
-
-**Przepływ główny:**
-
-1. System wyświetla konduktorowi pozytywny wynik walidacji biletu.
-2. Konduktor wybiera opcję potwierdzenia ważności biletu.
-3. System oznacza bilet jako sprawdzony.
-4. System zapisuje wynik kontroli w historii biletu.
-5. System aktualizuje status biletu w systemie centralnym.
-6. Konduktor przechodzi do kontroli kolejnego pasażera albo kończy kontrolę.
-
-**Przepływy alternatywne:**
-
-**A1: Konduktor nie zatwierdza wyniku**
-
-1. System wyświetla wynik pozytywny.
-2. Konduktor nie potwierdza wyniku, np. z powodu dodatkowej weryfikacji.
-3. System nie zmienia statusu biletu na sprawdzony.
-4. Kontrola pozostaje niezakończona dla danego biletu.
-
-**A2: Nie udało się zapisać potwierdzenia**
-
-1. Konduktor potwierdza ważność biletu.
-2. System próbuje zapisać status biletu jako sprawdzony.
-3. Występuje błąd zapisu lub komunikacji z systemem centralnym.
-4. System informuje konduktora o niepowodzeniu.
-5. Konduktor może ponowić zapis lub kontynuować pracę w trybie awaryjnym.
-
-**A3: Status biletu zmienia się w trakcie potwierdzania**
-
-1. System początkowo zwraca wynik pozytywny.
-2. Podczas zapisu statusu system wykrywa zmianę danych biletu.
-3. System odrzuca potwierdzenie i wymaga ponownego sprawdzenia ważności biletu.
-
-**Warunki końcowe:**
-
-- **Sukces:** Bilet zostaje oznaczony jako ważny i sprawdzony, a wynik kontroli zostaje zapisany w systemie.
-- **Błąd:** Potwierdzenie nie zostaje zapisane, a status biletu pozostaje niezmieniony lub wymaga ponownej walidacji.
-
----
-
-## UC-13: Utwórz raport z kontroli
-
-**Powiązana historia użytkownika:**  
-Jako konduktor chcę utworzyć raport z kontroli, aby podsumować wykonane sprawdzenia biletów i przekazać ich wyniki do systemu centralnego.
-
-**Główny aktor:**  
-Konduktor
-
-**Aktorzy wspierający:**  
-System centralny
-
-**Relacja z innym przypadkiem użycia:**  
-Przypadek użycia rozszerza „Sprawdź ważność biletu”.
-
-**Warunki wstępne:**
-
-- Konduktor przeprowadził jedną lub więcej kontroli biletów.
-- Wyniki kontroli zostały zapisane lokalnie lub w systemie centralnym.
-- System posiada dane potrzebne do przygotowania raportu.
-- Konduktor zakończył kontrolę lub chce wygenerować raport częściowy.
-
-**Przepływ główny:**
-
-1. Konduktor wybiera opcję utworzenia raportu z kontroli.
-2. System pobiera zapisane wyniki kontroli biletów.
-3. System agreguje dane dotyczące liczby sprawdzonych biletów.
-4. System uwzględnia bilety ważne, nieważne, problematyczne oraz ewentualne błędy kontroli.
-5. System generuje raport z kontroli.
-6. Konduktor przegląda raport.
-7. Konduktor zatwierdza raport.
-8. System przesyła raport do systemu centralnego.
-9. System centralny zapisuje raport i aktualizuje historię kontroli.
-
-**Przepływy alternatywne:**
-
-**A1: Brak danych do raportu**
-
-1. Konduktor wybiera opcję utworzenia raportu.
-2. System nie znajduje żadnych zapisanych wyników kontroli.
-3. System informuje konduktora, że raport nie może zostać utworzony.
-4. Konduktor wraca do kontroli lub kończy proces bez raportu.
-
-**A2: Raport zawiera niepełne dane**
-
-1. System wykrywa, że część wyników kontroli nie została zsynchronizowana.
-2. System oznacza raport jako niepełny.
-3. Konduktor może zatwierdzić raport częściowy albo ponowić synchronizację danych.
-4. Po udanej synchronizacji system aktualizuje raport.
-
-**A3: Nie udało się przesłać raportu do systemu centralnego**
-
-1. Konduktor zatwierdza raport.
-2. System próbuje przesłać raport do systemu centralnego.
-3. Występuje błąd połączenia lub błąd zapisu.
-4. System zapisuje raport lokalnie jako oczekujący na wysłanie.
-5. System informuje konduktora, że raport zostanie przesłany po przywróceniu połączenia.
-
-**A4: Konduktor odrzuca raport przed wysłaniem**
-
-1. System generuje raport.
-2. Konduktor zauważa niezgodność lub brakujące dane.
-3. Konduktor anuluje zatwierdzenie raportu.
-4. System umożliwia powrót do danych kontroli lub ponowne wygenerowanie raportu.
-
-**Warunki końcowe:**
-
-- **Sukces:** Raport z kontroli zostaje utworzony, zatwierdzony i zapisany w systemie centralnym.
-- **Błąd:** Raport nie zostaje utworzony albo nie zostaje przesłany do systemu centralnego; system zapisuje go lokalnie lub wymaga ponowienia operacji.
-
----
-
-## 4.5 Edycja rozkładu jazdy
-
----
-
-## UC-14: Edycja rozkładu jazdy
-
-**Powiązana historia użytkownika:**  
-Jako dyspozytor chcę edytować rozkład jazdy w czasie rzeczywistym, aby dostosować ruch pociągów do nagłego zdarzenia operacyjnego i zapewnić płynność ruchu.
+Jako dyspozytor chcę widzieć geolokalizację pociągów na mapie, aby monitorować ruch.
 
 **Główny aktor:**  
 Dyspozytor
 
 **Warunki wstępne:**
 
-- Dyspozytor jest zalogowany do systemu z uprawnieniami operacyjnymi.
-- Nastąpił wyzwalacz: nagłe zdarzenie operacyjne, np. awaria lub zamknięcie toru, wymagające interwencji w bieżący rozkład.
-- System posiada dostęp do mapy geolokalizacyjnej i aktualnych parametrów pociągów.
+- Dyspozytor ma dostęp do systemu RailTravel.
+- System posiada aktualny rozkład jazdy.
+- System odbiera dane lokalizacyjne z modułów GPS+GSM pojazdów.
+- W systemie istnieją aktywne kursy pociągów.
 
 **Przepływ główny:**
 
-1. Dyspozytor wyszukuje i wybiera pociąg, korzystając z mapy geolokalizacyjnej.
-2. System wyświetla aktualny rozkład jazdy oraz bieżącą pozycję pociągu na trasie.
-3. Dyspozytor edytuje parametry w rozkładzie, np. wprowadza wymuszone opóźnienie, objazd lub pominięcie stacji.
-4. System weryfikuje zedytowany rozkład pod kątem potencjalnych konfliktów przestrzennych lub czasowych z innymi pociągami na trasie.
-5. Dyspozytor zatwierdza edycję rozkładu jazdy.
-6. System aktualizuje rozkład jazdy w centralnej bazie z wymogiem odświeżania danych w czasie poniżej 60 sekund.
+1. Dyspozytor otwiera moduł mapy geolokalizacyjnej.
+2. System pobiera aktualne dane lokalizacyjne aktywnych pociągów.
+3. System wyświetla pozycje pociągów na mapie.
+4. System odświeża pozycje pociągów w czasie nie dłuższym niż 60 sekund.
+5. Dyspozytor klika ikonę wybranego pociągu.
+6. System wyświetla szczegóły pociągu: numer, trasę, opóźnienie i prędkość.
+7. Dyspozytor analizuje status ruchu pociągów.
 
 **Przepływy alternatywne:**
 
-**A1: Wykrycie konfliktu w ruchu**
+**A1: Utrata sygnału GPS**
 
-1. System wstrzymuje aktualizację i informuje dyspozytora o kolizji z innym pociągiem.
-2. Dyspozytor koryguje wprowadzane parametry, np. wydłuża czas przejazdu.
-3. Dyspozytor ponawia próbę zapisu.
+1. System nie otrzymuje aktualnej lokalizacji pociągu.
+2. System wyróżnia ikonę pociągu jako „sygnał utracony”.
+3. System wyświetla ostatnią znaną lokalizację pociągu.
 
-**A2: Całkowite odwołanie kursu**
+**A2: Brak danych lokalizacyjnych dla pociągu**
 
-1. Dyspozytor ze względu na powagę sytuacji operacyjnej zamiast edycji trasy oznacza pociąg jako odwołany.
-2. System zwalnia trasę i usuwa kurs z aktywnych rozkładów.
+1. System nie posiada danych GPS dla wybranego pociągu.
+2. System informuje dyspozytora o braku aktualnych danych.
+3. Dyspozytor może odświeżyć widok lub sprawdzić inne dane operacyjne.
 
 **Warunki końcowe:**
 
-- Rozkład jazdy dla danego pociągu zostaje zaktualizowany w systemie operacyjnym bez generowania konfliktów z innymi uczestnikami ruchu.
+- **Sukces:** Dyspozytor widzi aktualne pozycje aktywnych pociągów na mapie.
+- **Błąd:** System nie może wyświetlić aktualnych danych lokalizacyjnych i prezentuje ostatni znany status.
 
 ---
 
-## UC-15: Wprowadzenie komunikatów o awariach
+### UC-09: Wprowadzenie awarii i komunikatów specjalnych
 
 **Powiązana historia użytkownika:**  
-Jako dyspozytor chcę wprowadzić komunikat specjalny o awarii, aby szybko poinformować pasażerów o zmianach organizacyjnych wynikających z edycji rozkładu.
+Jako dyspozytor chcę wprowadzać awarie i komunikaty specjalne, aby informować pasażerów.
 
 **Główny aktor:**  
 Dyspozytor
 
 **Warunki wstępne:**
 
-- Dyspozytor zedytował rozkład jazdy lub zidentyfikował awarię na trasie.
-- System zidentyfikował pasażerów posiadających aktywne bilety na modyfikowany kurs.
+- Dyspozytor jest zalogowany do systemu z odpowiednimi uprawnieniami.
+- Dyspozytor zidentyfikował awarię, utrudnienie lub zmianę organizacyjną.
+- System umożliwia przypisanie komunikatu do konkretnej linii lub stacji.
 
 **Przepływ główny:**
 
-1. Dyspozytor wybiera opcję wprowadzania komunikatów specjalnych przypisanych do danej linii lub stacji.
-2. Dyspozytor redaguje treść komunikatu, np. powód opóźnienia lub informację o uruchomieniu komunikacji zastępczej.
-3. Dyspozytor zatwierdza nadanie komunikatu awaryjnego do systemu.
-4. System automatycznie wysyła powiadomienia push lub SMS do przypisanych pasażerów z informacją o utrudnieniach i zmianach w podróży.
-5. System wyświetla komunikat o awarii w szczegółach podróży w aplikacji oraz na tablicach informacyjnych.
+1. Dyspozytor wybiera opcję wprowadzenia komunikatu specjalnego.
+2. Dyspozytor przypisuje komunikat do konkretnej linii, stacji lub kursu.
+3. Dyspozytor uzupełnia obowiązkowe pola: tytuł, treść oraz czas obowiązywania.
+4. Dyspozytor zatwierdza publikację komunikatu.
+5. System zapisuje komunikat w bazie danych.
+6. System publikuje komunikat w aplikacji pasażerskiej w czasie poniżej 60 sekund.
+7. System wysyła powiadomienia push lub SMS do pasażerów powiązanych z daną podróżą, jeżeli są dostępni.
+8. System wyświetla komunikat na tablicach informacyjnych, jeżeli są zintegrowane z systemem.
+9. Po upływie czasu obowiązywania system automatycznie archiwizuje komunikat.
 
 **Przepływy alternatywne:**
 
 **A1: Brak przypisanych pasażerów**
 
-1. System nie generuje wysyłki powiadomień bezpośrednich, np. push lub SMS.
-2. System publikuje komunikat na ogólnodostępnych tablicach stacyjnych i w wynikach wyszukiwania.
+1. System nie znajduje pasażerów przypisanych do danej linii, stacji lub kursu.
+2. System nie generuje wysyłki bezpośrednich powiadomień push lub SMS.
+3. System publikuje komunikat w aplikacji oraz na ogólnodostępnych tablicach informacyjnych.
+
+**A2: Brak wymaganych pól komunikatu**
+
+1. Dyspozytor próbuje zapisać komunikat bez tytułu, treści lub czasu obowiązywania.
+2. System blokuje zapis.
+3. System wskazuje brakujące pola.
+4. Dyspozytor uzupełnia dane i ponawia zapis.
 
 **Warunki końcowe:**
 
-- Komunikat o awarii zostaje zarejestrowany w systemie, a pasażerowie otrzymują natychmiastowe powiadomienie o zmianach wynikających ze zdarzenia operacyjnego.
+- **Sukces:** Komunikat o awarii lub utrudnieniu zostaje zarejestrowany, opublikowany i widoczny dla pasażerów.
+- **Błąd:** Komunikat nie zostaje opublikowany, a dyspozytor otrzymuje informację o przyczynie niepowodzenia.
+
+---
+
+## 4.4 Kontrola biletów
+
+### UC-10: Skanowanie kodu QR biletu
+
+**Powiązana historia użytkownika:**  
+Jako kontroler chcę zeskanować kod QR biletu w czasie poniżej 200 ms, aby przeprowadzać kontrolę szybciej.
+
+**Główny aktor:**  
+Kontroler
+
+**Aktorzy wspierający:**  
+Pasażer
+
+**Warunki wstępne:**
+
+- Kontroler rozpoczął kontrolę biletów w pociągu.
+- Pasażer posiada bilet z kodem QR w formie elektronicznej lub papierowej.
+- Urządzenie kontrolera ma uruchomioną aplikację kontrolerską.
+- Aplikacja posiada dostęp do lokalnej kopii bazy biletów umożliwiającej pracę offline.
+- Kod QR jest możliwy do okazania kontrolerowi.
+
+**Przepływ główny:**
+
+1. Kontroler podchodzi do pasażera i prosi o okazanie biletu.
+2. Pasażer okazuje bilet z kodem QR.
+3. Kontroler uruchamia funkcję skanowania biletu w aplikacji.
+4. Kontroler kieruje skaner lub kamerę urządzenia na kod QR biletu.
+5. System odczytuje kod QR.
+6. System przetwarza dane zapisane w kodzie QR.
+7. System weryfikuje dane biletu na podstawie lokalnej kopii bazy lub dostępnego połączenia z systemem centralnym.
+8. System przekazuje wynik do przypadku użycia „UC-11: Wyświetlenie statusu biletu”.
+9. Kontroler otrzymuje wynik skanowania w czasie nieprzekraczającym 200 ms od poprawnego odczytu kodu.
+
+**Przepływy alternatywne:**
+
+**A1: Kod QR jest nieczytelny**
+
+1. System nie może odczytać kodu QR z biletu.
+2. System wyświetla komunikat o błędzie odczytu w czasie krótszym niż 500 ms.
+3. Kontroler prosi pasażera o ponowne okazanie biletu, zwiększenie jasności ekranu albo pokazanie innej wersji biletu.
+4. Kontroler ponawia skanowanie.
+
+**A2: Kod QR ma błędny format**
+
+1. System odczytuje kod QR, ale nie rozpoznaje go jako poprawnego biletu.
+2. System wyświetla komunikat o błędnym lub nieobsługiwanym kodzie.
+3. Kontroler informuje pasażera o problemie.
+4. Kontrola przechodzi do obsługi biletu jako nieważnego w ramach wyniku wyświetlanego w UC-11.
+
+**A3: Brak połączenia z systemem centralnym**
+
+1. System nie może połączyć się z systemem centralnym.
+2. System przeprowadza weryfikację na podstawie lokalnej kopii bazy biletów.
+3. System oznacza wynik jako uzyskany w trybie offline.
+4. Historia skanowania zostaje zapisana lokalnie na urządzeniu kontrolera.
+
+**A4: Warunki oświetleniowe są słabe**
+
+1. Kontroler skanuje bilet przy oświetleniu poniżej 100 lx.
+2. Aplikacja dostosowuje działanie skanera lub wykorzystuje doświetlenie urządzenia, jeżeli jest dostępne.
+3. Jeżeli kod zostanie odczytany, proces przebiega dalej zgodnie z przepływem głównym.
+4. Jeżeli kod nie zostanie odczytany, system przechodzi do alternatywy A1.
+
+**Warunki końcowe:**
+
+- **Sukces:** Kod QR zostaje odczytany, dane biletu zostają przetworzone, a system przechodzi do wyświetlenia statusu biletu.
+- **Błąd:** Kod QR nie zostaje odczytany albo nie zawiera poprawnych danych biletu; system wyświetla komunikat o błędzie.
+
+---
+
+### UC-11: Wyświetlenie statusu biletu
+
+**Powiązana historia użytkownika:**  
+Jako kontroler chcę widzieć status biletu: ważny, nieważny, duplikat lub zniżka, aby szybko informować pasażera.
+
+**Główny aktor:**  
+Kontroler
+
+**Aktorzy wspierający:**  
+Pasażer
+
+**Warunki wstępne:**
+
+- Kod QR biletu został zeskanowany lub przetworzony przez aplikację kontrolerską.
+- System posiada dane potrzebne do określenia statusu biletu.
+- Aplikacja kontrolerska działa online albo offline na podstawie lokalnej kopii bazy.
+- Kontroler oczekuje na wynik kontroli biletu.
+
+**Przepływ główny:**
+
+1. System analizuje dane biletu pobrane z kodu QR.
+2. System sprawdza status biletu w bazie lokalnej lub centralnej.
+3. System określa jeden z podstawowych statusów biletu: WAŻNY, NIEWAŻNY, DUPLIKAT albo ZNIŻKA.
+4. System wyświetla wynik na ekranie urządzenia kontrolera.
+5. Kontroler odczytuje status biletu.
+6. Kontroler informuje pasażera o wyniku kontroli.
+7. System zapisuje skan w historii ostatnich skanowań na urządzeniu kontrolera.
+8. Jeżeli bilet jest ważny i nie wymaga dodatkowych dokumentów, kontroler potwierdza ważność biletu i kończy kontrolę pasażera.
+9. Pasażer kontynuuje podróż.
+
+**Przepływy alternatywne:**
+
+**A1: Status biletu — WAŻNY**
+
+1. System wyświetla status WAŻNY.
+2. Kontroler potwierdza ważność biletu.
+3. System zapisuje pozytywny wynik kontroli w historii skanowań.
+4. Pasażer kontynuuje podróż.
+
+**A2: Status biletu — NIEWAŻNY**
+
+1. System wyświetla status NIEWAŻNY.
+2. Kontroler informuje pasażera, że bilet nie uprawnia do przejazdu.
+3. Kontroler podejmuje dalsze działania zgodnie z procedurą przewoźnika, np. wystawia mandat.
+4. System zapisuje negatywny wynik kontroli w historii skanowań.
+
+**A3: Status biletu — DUPLIKAT**
+
+1. System wyświetla status DUPLIKAT.
+2. System rejestruje duplikat z datą, godziną oraz ID kontrolera.
+3. Kontroler informuje pasażera o wykryciu biletu użytego ponownie albo podejrzanego o nadużycie.
+4. Kontroler podejmuje dalsze działania zgodnie z procedurą przewoźnika.
+5. System zapisuje zdarzenie w historii skanowań.
+
+**A4: Status biletu — ZNIŻKA**
+
+1. System wyświetla status ZNIŻKA.
+2. System pokazuje typ zniżki oraz dokument wymagany do okazania.
+3. Kontroler prosi pasażera o okazanie dokumentu potwierdzającego uprawnienie do zniżki.
+4. Pasażer okazuje wymagany dokument.
+5. Kontroler weryfikuje dokument.
+6. Jeżeli dokument jest poprawny, kontroler potwierdza ważność biletu i oddaje dokument pasażerowi.
+7. Jeżeli dokument jest niepoprawny albo pasażer go nie posiada, kontroler traktuje kontrolę jako negatywną i podejmuje dalsze działania zgodnie z procedurą przewoźnika.
+
+**A5: Historia skanów działa offline**
+
+1. System nie ma połączenia z systemem centralnym.
+2. System zapisuje wynik kontroli lokalnie na urządzeniu kontrolera.
+3. System udostępnia historię ostatnich 50 skanów offline.
+4. Po odzyskaniu połączenia dane mogą zostać zsynchronizowane z systemem centralnym.
+
+**Warunki końcowe:**
+
+- **Sukces:** Kontroler otrzymuje jednoznaczny status biletu i może poinformować pasażera o wyniku kontroli.
+- **Błąd:** Status biletu nie może zostać jednoznacznie ustalony; system zapisuje zdarzenie jako problematyczne albo wymaga ponownego skanowania.
+
+---
+
+### UC-12: Generowanie raportów sprzedaży i kontroli biletów
+
+**Powiązana historia użytkownika:**  
+Jako przewoźnik chcę generować raporty sprzedaży i kontroli biletów, aby analizować obciążenie ruchu.
+
+**Główny aktor:**  
+Przewoźnik
+
+**Warunki wstępne:**
+
+- Przewoźnik jest zalogowany do systemu z odpowiednimi uprawnieniami.
+- System posiada dane sprzedażowe oraz dane z kontroli biletów.
+- Dane kontroli obejmują co najmniej liczbę skanowań oraz informacje o biletach nieważnych i duplikatach.
+- Dane sprzedażowe obejmują co najmniej liczbę biletów, przychód, klasy i trasy.
+- Zakres raportu może zostać określony przez użytkownika.
+
+**Przepływ główny:**
+
+1. Przewoźnik otwiera moduł raportów w systemie.
+2. System wyświetla formularz konfiguracji raportu.
+3. Przewoźnik wybiera zakres dat raportu.
+4. Przewoźnik wybiera granulację danych: dzień, tydzień albo miesiąc.
+5. Przewoźnik wybiera zakres raportu: sprzedaż, kontrola biletów albo raport łączony.
+6. System pobiera dane sprzedażowe dla wskazanego okresu.
+7. System pobiera dane kontroli biletów dla wskazanego okresu.
+8. System agreguje liczbę biletów, przychód, podział na klasy i trasy.
+9. System agreguje liczbę skanowań, odsetek biletów nieważnych oraz odsetek duplikatów.
+10. System generuje raport.
+11. System wyświetla podgląd raportu przewoźnikowi.
+12. Przewoźnik pobiera raport w formacie CSV albo PDF.
+13. System zapisuje informację o wygenerowaniu raportu.
+
+**Przepływy alternatywne:**
+
+**A1: Brak danych dla wskazanego okresu**
+
+1. Przewoźnik wybiera zakres dat, dla którego system nie posiada danych.
+2. System wyświetla komunikat o braku danych.
+3. Przewoźnik może zmienić zakres dat albo anulować generowanie raportu.
+
+**A2: Zbyt duży zakres danych**
+
+1. Przewoźnik wybiera bardzo szeroki zakres dat.
+2. System informuje, że wygenerowanie raportu może potrwać dłużej albo wymaga zawężenia zakresu.
+3. Przewoźnik zmienia zakres dat lub wybiera większą granulację danych.
+
+**A3: Błąd generowania pliku PDF lub CSV**
+
+1. System poprawnie agreguje dane, ale nie może wygenerować wybranego formatu pliku.
+2. System wyświetla komunikat o błędzie eksportu.
+3. Przewoźnik może ponowić eksport albo wybrać drugi dostępny format.
+
+**A4: Raport za okres 30 dni przekracza limit czasu**
+
+1. System rozpoczyna generowanie raportu za okres 30 dni.
+2. Generowanie przekracza wymagany limit 10 sekund.
+3. System informuje o problemie wydajnościowym lub proponuje wygenerowanie raportu w tle, zależnie od konfiguracji systemu.
+4. Zdarzenie zostaje zapisane jako błąd operacyjny.
+
+**Warunki końcowe:**
+
+- **Sukces:** Raport sprzedaży i/lub kontroli biletów zostaje wygenerowany dla wskazanego zakresu dat i może zostać pobrany w formacie CSV lub PDF.
+- **Błąd:** Raport nie zostaje wygenerowany albo nie może zostać pobrany; system informuje przewoźnika o przyczynie problemu.
