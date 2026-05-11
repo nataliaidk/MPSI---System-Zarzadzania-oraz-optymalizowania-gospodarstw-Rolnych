@@ -803,7 +803,49 @@ graph LR
 
     WBS --> P6_sup["6. Wsparcie i Utrzymanie"]:::p3
 ```
-## 2.2. Harmonogram prac
+## 2.2. Architektura C4
+
+Diagramy C4 przedstawiają architekturę systemu na trzech poziomach szczegółowości: kontekstu systemowego, kontenerów oraz komponentów modułu rezerwacji.
+
+### 2.2.1. C4 Level 1 - System Context
+
+![C4 Level 1 - System Context](architecture_exported/mpsiSystemContext-dark.png)
+
+![Legenda - C4 Level 1](architecture_exported/mpsiSystemContext-dark-key.png)
+
+### 2.2.2. C4 Level 2 - Container Diagram
+
+![C4 Level 2 - Container Diagram](architecture_exported/mpsiContainers-dark.png)
+
+![Legenda - C4 Level 2](architecture_exported/mpsiContainers-dark-key.png)
+
+### 2.2.3. C4 Level 3 - Booking Service Components
+
+![C4 Level 3 - Booking Service Components](architecture_exported/mpsiBookingServiceComponents-dark.png)
+
+![Legenda - C4 Level 3](architecture_exported/mpsiBookingServiceComponents-dark-key.png)
+
+## 2.3. User story mapping
+
+Rezultat warsztatów user story mapping został zapisany jako osobne wizualizacje HTML dla każdego procesu. Każda mapa zachowuje podział na:
+
+* **Aktywności** - główne etapy procesu użytkownika.
+* **Zadania użytkownika** - kroki wykonywane w ramach aktywności.
+* **User stories** - zakres funkcjonalny podzielony na MVP oraz kolejną iterację.
+
+### 2.3.1. Sprzedaż biletów
+
+![User story mapping - sprzedaż biletów](user_story_mapping/screenshots/ticket-sales.png)
+
+### 2.3.2. Śledzenie opóźnień
+
+![User story mapping - śledzenie opóźnień](user_story_mapping/screenshots/delay-tracking.png)
+
+### 2.3.3. Kontrola biletów
+
+![User story mapping - kontrola biletów](user_story_mapping/screenshots/ticket-inspection.png)
+
+## 2.4. Harmonogram prac
 ```mermaid
 gantt
     title Harmonogram prac
