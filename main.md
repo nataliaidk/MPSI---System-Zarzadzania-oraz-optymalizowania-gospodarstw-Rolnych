@@ -884,3 +884,138 @@ gantt
 ```
 
 
+
+# **Kosztorys projektu i harmonogram płatności**
+
+## **1\. Zarządzanie Projektem**
+
+| Zadanie | Liczba osobodni | Stawka dzienna (PLN) | Koszt (PLN) |
+| :---- | :---- | :---- | :---- |
+| 1.1. Inicjacja projektu | 30 | 2 000 | 60 000 |
+| 1.2. Cykl wytwórczy (Agile/DevOps) | 160 | 2 000 | 320 000 |
+| **Razem Zarządzanie Projektem** | **190** |  | **380 000** |
+
+## **2\. Analiza i Projektowanie**
+
+| Zadanie | Liczba osobodni | Stawka dzienna (PLN) | Koszt (PLN) |
+| :---- | :---- | :---- | :---- |
+| 2.1. Analiza wymagań i procesów | 60 | 1 800 | 108 000 |
+| 2.2. Architektura IT | 45 | 2 200 | 99 000 |
+| 2.3. UX/UI Design | 50 | 1 900 | 95 000 |
+| **Razem Analiza i Projektowanie** | **155** |  | **302 000** |
+
+## **3\. Implementacja Modułów**
+
+| Zadanie | Liczba osobodni | Stawka dzienna (PLN) | Koszt (PLN) |
+| :---- | :---- | :---- | :---- |
+| 3.1. System Sprzedaży i Rezerwacji | 160 | 2 000 | 320 000 |
+| 3.2. System IoT i Śledzenie Floty | 140 | 2 000 | 280 000 |
+| 3.3. Kontrola i Raportowanie | 150 | 2 000 | 300 000 |
+| 3.4. Infrastruktura i Bezpieczeństwo | 120 | 2 200 | 264 000 |
+| **Razem Implementacja Modułów** | **570** |  | **1 164 000** |
+
+## 
+
+## **4\. Testowanie i Jakość**
+
+| Zadanie | Liczba osobodni | Stawka dzienna (PLN) | Koszt (PLN) |
+| :---- | :---- | :---- | :---- |
+| 4.1. Testy integracyjne  | 35 | 1 700 | 59 500 |
+| 4.2. Testy wydajnościowe i obciążeniowe | 25 | 1 800 | 45 000 |
+| 4.3. Audyt i testy bezpieczeństwa  | 20 | 2 200 | 44 000 |
+| 4.4. Testy polowe i operacyjne sprzętu  | 25 | 1 600 | 40 000 |
+| 4.5. Testy UAT (User Acceptance Testing)  | 20 | 1 700 | 34 000 |
+| **Razem Testowanie i Jakość** | **125** |  | **222 500** |
+
+## **5\. Wdrożenie i Szkolenia.**
+
+| Zadanie | Liczba osobodni | Stawka dzienna (PLN) | Koszt (PLN) |
+| :---- | :---- | :---- | :---- |
+| 5.1. Dobór, konfiguracja i fizyczny montaż sprzętu | 40 | 1 800 | 72 000 |
+| 5.2. Migracja danych i konfiguracja produkcyjna | 30 | 2 000 | 60 000 |
+| 5.3. Procedura Go-Live MVP i okres Hypercare (Bezpośrednie wsparcie inżynieryjne w kluczowym okresie pierwszych tygodni po uruchomieniu) | 40 | 2 000 | 80 000 |
+| 5.4. Szkolenia dla personelu terenowego (warsztaty dla konduktorów i kierowców z obsługi aplikacji mobilnej, trybu offline i procedur awaryjnych) | 30 | 1 600 | 48 000 |
+| 5.5. Szkolenia dla administracji i dyspozytorów | 20 | 1 700 | 34 000 |
+| **Razem Wdrożenie i Szkolenia** | **160** |  | **294 000** |
+
+## **6\. Wsparcie i Utrzymanie (24 miesiące)**
+
+| Zadanie | Liczba osobodni | Stawka dzienna (PLN) | Koszt (PLN) |
+| :---- | :---- | :---- | :---- |
+| 6\. Wsparcie techniczne i utrzymanie systemu | 220 | 1 600 | 352 000 |
+| **Razem Wsparcie i Utrzymanie** | **220** |  | **352 000** |
+
+## **7\. Koszty materiałów i sprzętu**
+
+| Pozycja | Cena jedn. (PLN) | Liczba sztuk | Koszt (PLN) |
+| :---- | :---- | :---- | :---- |
+| Terminale mobilne IP67 dla konduktorów | 1 500 | 100 | 150 000 |
+| Nadajniki GPS i akcesoria montażowe do pojazdów | 1 000 | 50 | 50 000 |
+| Licencje, certyfikaty SSL i infrastruktura bazodanowa HA | 150 000 | 1 | 150 000 |
+| **Razem Koszty materiałów i sprzętu** |  |  | **350 000** |
+
+## **8\. Koszty pośrednie**
+
+| Kategoria | Koszt (PLN) |
+| :---- | :---- |
+| Koszty administracyjne | 68 000 |
+| Koszty biurowe | 45 000 |
+| Koszty komunikacji | 22 000 |
+| **Razem Koszty pośrednie** | **135 000** |
+
+## **Podsumowanie kosztów**
+
+| Kategoria | Koszt (PLN) |
+| :---- | :---- |
+| 1\. Zarządzanie Projektem | 380 000 |
+| 2\. Analiza i Projektowanie | 302 000 |
+| 3\. Implementacja Modułów | 1 164 000 |
+| 4\. Testowanie i Jakość | 222 500 |
+| 5\. Wdrożenie i Szkolenia | 294 000 |
+| 6\. Wsparcie i Utrzymanie | 352 000 |
+| 7\. Koszty materiałów i sprzętu | 350 000 |
+| 8\. Koszty pośrednie | 135 000 |
+| **Suma kosztów** | **3 199 500** |
+| Bufor na nieprzewidziane wydatki (10%) | 319 950 |
+| **Wartość netto** | **3 519 450** |
+| VAT (23%) | 809 473,50 |
+| **Wartość brutto** | **4 328 923,50** |
+
+## **Harmonogram płatności**
+
+| Etap projektu | Procent płatności | Kwota netto (PLN) | Przewidywany termin |
+| :---- | :---- | :---- | :---- |
+| Podpisanie umowy (Zaliczka) | 20% | 703 890,00 | 30.04.2026 |
+| Zakończenie analizy i projektowania | 15% | 527 917,50 | 15.06.2026 |
+| Zakończenie implementacji modułów | 25% | 879 862,50 | 15.09.2026 |
+| Zakończenie infrastruktury i testów | 15% | 527 917,50 | 15.11.2026 |
+| Odbiór końcowy i wdrożenie | 15% | 527 917,50 | 15.01.2027 |
+| Zakończenie okresu gwarancyjnego | 10% | 351 945,00 | 15.01.2029 |
+| **Razem** | **100%** | **3 519 450,00** |  |
+
+## **Dodatkowe uwagi i założenia**
+
+* Kosztorys zakłada standardową stawkę godzinową specjalistów IT zgodnie z aktualnymi stawkami rynkowymi.  
+* Rozbudowana faza testów operacyjnych i terenowych ma kluczowe znaczenie dla weryfikacji niezawodności pracy w warunkach braku dostępu do sieci, co odpowiada specyfice transportu kolejowego.  
+* Urządzenia do skanowania kodów QR spełniają wymagania postawione w specyfikacji (norma IP67, weryfikacja w trudnych warunkach oświetleniowych, czas odczytu \< 200 ms).  
+* Wsparcie i utrzymanie obejmuje 24 miesiące po zakończeniu wdrożenia (Hypercare i bieżące poprawki).  
+* Bufor na nieprzewidziane wydatki (10%) uwzględnia potencjalne ryzyka związane z m.in. zmianami w procesach u przewoźników, opóźnieniami integracji API oraz problemami z fizycznym montażem nadajników GPS w taborach o różnej konstrukcji.
+
+## **Kosztorys MVP**
+
+Na podstawie priorytetów projektowych przedstawiono wycenę minimalnej wersji produktu (MVP), ograniczającą początkowy zakres zaawansowanych raportów BI oraz zmniejszającą początkową pule zakupywanych urządzeń mobilnych.
+
+| Kategoria | Koszt (PLN) |
+| :---- | :---- |
+| Zarządzanie Projektem (60%) | 228 000 |
+| Analiza i Projektowanie (80%) | 241 600 |
+| Implementacja podstawowych modułów (45%) | 523 800 |
+| Testowanie podstawowych modułów (50%) | 111 250 |
+| Wdrożenie i podstawowe szkolenia (40%) | 117 600 |
+| Zakup min. liczby sprzętu (m.in. 50 terminali) oraz niezbędna licencja/chmura | 195 000 |
+| Koszty pośrednie (60%) | 81 000 |
+| **Suma kosztów MVP** | **1 498 250** |
+| Bufor na nieprzewidziane wydatki (10%) | 149 825 |
+| **Wartość netto MVP** | **1 648 075** |
+| VAT (23%) | 379 057,25 |
+| **Wartość brutto MVP** | **2 027 132,25** |
