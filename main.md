@@ -803,7 +803,24 @@ graph LR
 
     WBS --> P6_sup["6. Wsparcie i Utrzymanie"]:::p3
 ```
-## 2.2. Harmonogram prac
+## 2.2. Architektura C4
+
+Diagramy C4 dla systemu zostały przygotowane w pliku [architecture.dsl](architecture.dsl) w formacie Structurizr DSL.
+
+Plik zawiera następujące widoki:
+
+* **C4 Level 1 - System Context** (`SystemContext`) - pokazuje system na tle pasażera, kontrolera, dyspozytora, administratora oraz systemów zewnętrznych: OAuth 2.0 Provider, PayU i Train Data Source.
+* **C4 Level 2 - Container Diagram** (`Containers`) - przedstawia aplikacje klienckie, API Gateway, Message Bus, mikroserwisy domenowe oraz przypisane do nich bazy danych PostgreSQL.
+* **C4 Level 3 - Components of Booking Service** (`BookingServiceComponents`) - uszczegóławia komponenty Booking Service odpowiedzialne za obsługę rezerwacji, generowanie biletów, publikację zdarzeń oraz zapis danych.
+
+```text
+architecture.dsl
++-- SystemContext
++-- Containers
++-- BookingServiceComponents
+```
+
+## 2.3. Harmonogram prac
 ```mermaid
 gantt
     title Harmonogram prac
