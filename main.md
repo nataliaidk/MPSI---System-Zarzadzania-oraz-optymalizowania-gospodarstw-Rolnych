@@ -825,7 +825,56 @@ Diagramy C4 przedstawiają architekturę systemu na trzech poziomach szczegóło
 
 ![Legenda - C4 Level 3](architecture_exported/mpsiBookingServiceComponents-dark-key.png)
 
-## 2.3. Harmonogram prac
+## 2.3. User story mapping
+
+Poniższe mapy user story mapping porządkują wynik warsztatów według trzech poziomów:
+
+* **Aktywności** - główne etapy procesu użytkownika.
+* **Zadania użytkownika** - kroki wykonywane w ramach aktywności.
+* **User stories** - zakres funkcjonalny podzielony na MVP oraz kolejną iterację.
+
+### 2.3.1. Sprzedaż biletów
+
+**Aktywności:** wybór biletu, zakup biletu, otrzymanie biletu.
+
+| Zadanie użytkownika | User stories MVP | Kolejna iteracja |
+| --- | --- | --- |
+| Wyszukanie połączenia | Obsługa 1 przewoźnika<br>Połączenia dla 1 kraju | Obsługa wielu przewoźników<br>Połączenia międzynarodowe<br>Komunikaty o opóźnieniach |
+| Wybór miejsca | Wybór ulgi<br>Określenie preferencji miejsca | Obsługa zajętych miejsc<br>Interaktywna mapa pociągu<br>Wybór wielu miejsc<br>Wypełnienie informacji o współpasażerach |
+| Płatność zewnętrzna | Obsługa jednego systemu płatności | Obsługa koszyka |
+| Generowanie biletu | QR kod | - |
+| Dostarczenie | Kod QR wysyłany mailem | Kod QR w aplikacji mobilnej |
+
+### 2.3.2. Śledzenie opóźnień
+
+**Aktywności:** śledzenie opóźnienia, powiadamianie o opóźnieniach.
+
+| Zadanie użytkownika | User stories MVP | Kolejna iteracja |
+| --- | --- | --- |
+| Wyszukanie pociągu | Pobranie listy połączeń<br>Filtrowanie wyników | Filtrowanie po dodatkowych kryteriach<br>Podpowiedzi wyszukiwań<br>Zapamiętanie ostatniego wyszukiwania |
+| Wybór konkretnego kursu | Wybór pociągu z listy | Historia ostatnio wybranych połączeń |
+| Przejście do szczegółów podróży | Pobranie danych lokalizacyjnych<br>Pobranie rozkładu jazdy<br>Obliczenie opóźnienia<br>Obliczenie przewidywanego czasu przyjazdu | Automatyczne odświeżanie danych widoku |
+| Wyświetlenie informacji | Wyświetlenie opóźnienia<br>Wyświetlenie statusu<br>Wyświetlenie przewidywanego czasu przyjazdu<br>Wyświetlenie lokalizacji pociągu | - |
+| Zarządzanie powiadomieniami | Włączenie lub wyłączenie powiadomień danego kursu | Konfiguracja progu opóźnień<br>Wybór kanału powiadomień |
+| Otrzymanie powiadomienia | Generowanie powiadomień<br>Wysłanie powiadomienia przez email | Wysłanie powiadomienia push<br>Wysłanie powiadomienia przez SMS |
+
+### 2.3.3. Kontrola biletów
+
+**Aktywności:** rozpoczęcie kontroli, weryfikacja przejazdu, zakończenie i raportowanie.
+
+| Zadanie użytkownika | User stories MVP | Kolejna iteracja |
+| --- | --- | --- |
+| Podejście do pasażera | Obsługa rozpoczęcia kontroli | - |
+| Prośba o bilet | - | - |
+| Okazanie biletu | Okazanie biletu z kodem QR<br>Okazanie biletu cyfrowego | - |
+| Skanowanie QR | Skanowanie kodu QR | Kontrola biletu w trybie offline<br>Skanowanie w trudnych warunkach oświetleniowych |
+| Weryfikacja biletu | Prezentacja wyniku kontroli<br>Obsługa statusów biletu | - |
+| Obsługa ulgi | Weryfikacja dokumentu potwierdzającego ulgę | Obsługa wielu typów ulg<br>Obsługa niepoprawnej ulgi |
+| Obsługa problemu | Obsługa biletu nieważnego<br>Obsługa nieczytelnego kodu QR<br>Obsługa błędnego formatu biletu<br>Obsługa braku dokumentu do ulgi | - |
+| Rejestracja kontroli | Rejestracja wyniku kontroli<br>Rejestracja podejrzenia duplikatu | Historia ostatnich skanów |
+| Raportowanie | Eksport raportu kontroli | - |
+
+## 2.4. Harmonogram prac
 ```mermaid
 gantt
     title Harmonogram prac
