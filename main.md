@@ -805,20 +805,25 @@ graph LR
 ```
 ## 2.2. Architektura C4
 
-Diagramy C4 dla systemu zostały przygotowane w pliku [architecture.dsl](architecture.dsl) w formacie Structurizr DSL.
+Diagramy C4 przedstawiają architekturę systemu na trzech poziomach szczegółowości: kontekstu systemowego, kontenerów oraz komponentów modułu rezerwacji.
 
-Plik zawiera następujące widoki:
+### 2.2.1. C4 Level 1 - System Context
 
-* **C4 Level 1 - System Context** (`SystemContext`) - pokazuje system na tle pasażera, kontrolera, dyspozytora, administratora oraz systemów zewnętrznych: OAuth 2.0 Provider, PayU i Train Data Source.
-* **C4 Level 2 - Container Diagram** (`Containers`) - przedstawia aplikacje klienckie, API Gateway, Message Bus, mikroserwisy domenowe oraz przypisane do nich bazy danych PostgreSQL.
-* **C4 Level 3 - Components of Booking Service** (`BookingServiceComponents`) - uszczegóławia komponenty Booking Service odpowiedzialne za obsługę rezerwacji, generowanie biletów, publikację zdarzeń oraz zapis danych.
+![C4 Level 1 - System Context](architecture_exported/mpsiSystemContext-dark.png)
 
-```text
-architecture.dsl
-+-- SystemContext
-+-- Containers
-+-- BookingServiceComponents
-```
+![Legenda - C4 Level 1](architecture_exported/mpsiSystemContext-dark-key.png)
+
+### 2.2.2. C4 Level 2 - Container Diagram
+
+![C4 Level 2 - Container Diagram](architecture_exported/mpsiContainers-dark.png)
+
+![Legenda - C4 Level 2](architecture_exported/mpsiContainers-dark-key.png)
+
+### 2.2.3. C4 Level 3 - Booking Service Components
+
+![C4 Level 3 - Booking Service Components](architecture_exported/mpsiBookingServiceComponents-dark.png)
+
+![Legenda - C4 Level 3](architecture_exported/mpsiBookingServiceComponents-dark-key.png)
 
 ## 2.3. Harmonogram prac
 ```mermaid
