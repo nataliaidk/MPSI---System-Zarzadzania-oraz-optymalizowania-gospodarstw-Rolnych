@@ -833,12 +833,6 @@ Rezultat warsztatów user story mapping został zapisany jako osobne wizualizacj
 * **Zadania użytkownika** - kroki wykonywane w ramach aktywności.
 * **User stories** - zakres funkcjonalny podzielony na MVP oraz kolejną iterację.
 
-Pliki źródłowe wizualizacji znajdują się w katalogu `user_story_mapping/`:
-
-* [Sprzedaż biletów](user_story_mapping/ticket-sales.html)
-* [Śledzenie opóźnień](user_story_mapping/delay-tracking.html)
-* [Kontrola biletów](user_story_mapping/ticket-inspection.html)
-
 ### 2.3.1. Sprzedaż biletów
 
 ![User story mapping - sprzedaż biletów](user_story_mapping/screenshots/ticket-sales.png)
