@@ -2,7 +2,7 @@
 
 ## 4.1 Rozkład jazdy i planowanie podróży
 
-### UC-03: Edycja rozkładu jazdy
+### UC-01: Edycja rozkładu jazdy
 
 **Powiązana historia użytkownika:**  
 Jako przewoźnik chcę edytować rozkład jazdy, aby zmiany były natychmiast widoczne w systemie.
@@ -53,7 +53,7 @@ Przewoźnik / Dyspozytor
 
 ## 4.2 Sprzedaż biletów i rezerwacja miejsc
 
-### UC-04: Zakup biletu wielo-przewoźnikowego
+### UC-02: Zakup biletu wielo-przewoźnikowego
 
 **Powiązana historia użytkownika:**  
 Jako pasażer chcę kupić bilet u wielu przewoźników w jednej transakcji, aby ułatwić podróż wielo-przewoźnikową.
@@ -106,7 +106,7 @@ Pasażer
 
 ---
 
-### UC-05: Wybór i rezerwacja miejsca na planie wagonu
+### UC-03: Wybór i rezerwacja miejsca na planie wagonu
 
 **Powiązana historia użytkownika:**  
 Jako pasażer chcę wybrać miejsce na planie wagonu, aby dopasować komfort podróży.
@@ -155,7 +155,7 @@ Pasażer
 
 ---
 
-### UC-06: Zarządzanie ofertą przewozową przez przewoźnika
+### UC-04: Zarządzanie ofertą przewozową przez przewoźnika
 
 **Powiązana historia użytkownika:**  
 Jako przewoźnik chcę dodawać i aktualizować ofertę przewozową, aby sprzedaż była aktualna.
@@ -207,7 +207,7 @@ Przewoźnik
 
 ## 4.3 Informacje o opóźnieniach
 
-### UC-07: Otrzymanie powiadomienia o opóźnieniu
+### UC-05: Otrzymanie powiadomienia o opóźnieniu
 
 **Powiązana historia użytkownika:**  
 Jako pasażer chcę otrzymywać powiadomienia o aktualnych opóźnieniach mojego pociągu w czasie rzeczywistym.
@@ -249,7 +249,7 @@ Pasażer
 
 ---
 
-### UC-08: Monitorowanie geolokalizacji pociągów na mapie
+### UC-06: Monitorowanie geolokalizacji pociągów na mapie
 
 **Powiązana historia użytkownika:**  
 Jako dyspozytor chcę widzieć geolokalizację pociągów na mapie, aby monitorować ruch.
@@ -295,7 +295,7 @@ Dyspozytor
 
 ---
 
-### UC-09: Wprowadzenie awarii i komunikatów specjalnych
+### UC-07: Wprowadzenie awarii i komunikatów specjalnych
 
 **Powiązana historia użytkownika:**  
 Jako dyspozytor chcę wprowadzać awarie i komunikaty specjalne, aby informować pasażerów.
@@ -345,7 +345,7 @@ Dyspozytor
 
 ## 4.4 Kontrola biletów
 
-### UC-10: Skanowanie kodu QR biletu
+### UC-08: Skanowanie kodu QR biletu
 
 **Powiązana historia użytkownika:**  
 Jako kontroler chcę zeskanować kod QR biletu w czasie poniżej 200 ms, aby przeprowadzać kontrolę szybciej.
@@ -413,7 +413,7 @@ Pasażer
 
 ---
 
-### UC-11: Wyświetlenie statusu biletu
+### UC-09: Wyświetlenie statusu biletu
 
 **Powiązana historia użytkownika:**  
 Jako kontroler chcę widzieć status biletu: ważny, nieważny, duplikat lub zniżka, aby szybko informować pasażera.
@@ -491,7 +491,7 @@ Pasażer
 
 ---
 
-### UC-12: Generowanie raportów sprzedaży i kontroli biletów
+### UC-10: Generowanie raportów sprzedaży i kontroli biletów
 
 **Powiązana historia użytkownika:**  
 Jako przewoźnik chcę generować raporty sprzedaży i kontroli biletów, aby analizować obciążenie ruchu.
