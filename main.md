@@ -630,9 +630,6 @@ Przewoźnik
 ---
 # 2. Opis systemu
 ## 2.1. WBS
-
-## 2.1. WBS
-
 1. **Zarządzanie Projektem**
     1.1. **Inicjacja projektu**
         1.1.1. Opracowanie PMP (Project Management Plan) i rejestru ryzyk
@@ -790,7 +787,14 @@ graph LR
     P53 --> P531["Szkolenia konduktorów"]:::leaf
     P53 --> P532["Szkolenia administratorów"]:::leaf
 
-    WBS --> P6_sup["6. Wsparcie i Utrzymanie"]:::p3
+    %% --- 6. WSPARCIE I UTRZYMANIE ---
+    P6_SUP --> P61["6.1 Utrzymanie systemowe"]:::p3
+    P61 --> P611["Monitoring wydajności (SRE)"]:::leaf
+    P61 --> P612["Patch Management"]:::leaf
+
+    P6_SUP --> P62["6.2 Service Desk"]:::p3
+    P62 --> P621["Obsługa L1/L2/L3 (SLA 24/7/365)"]:::leaf
+    P62 --> P622["Zarządzanie bazą wiedzy"]:::leaf
 ```
 ## 2.2. Architektura C4
 
