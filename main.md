@@ -831,13 +831,34 @@ Rezultat warsztatów user story mapping został zapisany jako osobne wizualizacj
 
 ![User story mapping - sprzedaż biletów](user_story_mapping/screenshots/ticket-sales.png)
 
+**Tekst z wizualizacji:**
+
+* **Aktywności:** Wybór biletu; Zakup biletu; Otrzymanie biletu.
+* **Kroki użytkownika:** 1. Wyszukanie połączenia; 2. Wybór miejsca; 3. Płatność zewnętrzna; 4. Generowanie biletu; 5. Dostarczenie.
+* **MVP:** Obsługa 1 przewoźnika; Połączenia dla 1 kraju; Wybór ulgi; Określenie preferencji miejsca; Obsługa jednego systemu płatności; QR kod; Kod QR wysyłany mailem.
+* **Dalej:** Obsługa wielu przewoźników; Połączenia międzynarodowe; Komunikaty o opóźnieniach; Obsługa zajętych miejsc; Interaktywna mapa pociągu; Wybór wielu miejsc; Wypełnienie info o współpasażerach; Obsługa koszyka; Kod QR w aplikacji mobilnej.
+
 ### 2.3.2. Śledzenie opóźnień
 
 ![User story mapping - śledzenie opóźnień](user_story_mapping/screenshots/delay-tracking.png)
 
+**Tekst z wizualizacji:**
+
+* **Aktywności:** Śledzenie opóźnienia; Powiadamianie o opóźnieniach.
+* **Kroki użytkownika:** 1. Wyszukanie pociągu; 2. Wybór konkretnego kursu; 3. Przejście do szczegółów podróży; 4. Wyświetlenie informacji; 5. Zarządzanie powiadomieniami; 6. Otrzymanie powiadomienia.
+* **MVP:** Pobranie listy połączeń; Filtrowanie wyników; Wybór pociągu z listy; Pobranie danych lokalizacyjnych; Pobranie rozkładu jazdy; Obliczenie opóźnienia; Obliczenie przewidywanego czasu przyjazdu; Wyświetlenie opóźnienia; Wyświetlenie statusu; Wyświetlenie przewidywanego czasu przyjazdu; Wyświetlenie lokalizacji pociągu; Włączenie lub wyłączenie powiadomień danego kursu; Generowanie powiadomień; Wysłanie powiadomienia przez email.
+* **Dalej:** Filtrowanie po dodatkowych kryteriach; Podpowiedzi wyszukiwań; Zapamiętanie ostatniego wyszukiwania; Historia ostatnio wybranych połączeń; Automatyczne odświeżanie danych widoku; Konfiguracja progu opóźnień; Wybór kanału powiadomień; Wysłanie powiadomienia push; Wysłanie powiadomienia przez SMS.
+
 ### 2.3.3. Kontrola biletów
 
 ![User story mapping - kontrola biletów](user_story_mapping/screenshots/ticket-inspection.png)
+
+**Tekst z wizualizacji:**
+
+* **Aktywności:** Rozpoczęcie kontroli; Weryfikacja przejazdu; Zakończenie i raportowanie.
+* **Kroki użytkownika:** 1. Podejście do pasażera; 2. Prośba o bilet; 3. Okazanie biletu; 4. Skanowanie QR; 5. Weryfikacja biletu; 6. Obsługa ulgi; 7. Obsługa problemu; 8. Rejestracja kontroli; 9. Raportowanie.
+* **MVP:** Obsługa rozpoczęcia kontroli; Okazanie biletu z kodem QR; Okazanie biletu cyfrowego; Skanowanie kodu QR; Prezentacja wyniku kontroli; Obsługa statusów biletu; Weryfikacja dokumentu potwierdzającego ulgę; Obsługa biletu nieważnego; Obsługa nieczytelnego kodu QR; Obsługa błędnego formatu biletu; Obsługa braku dokumentu do ulgi; Rejestracja wyniku kontroli; Rejestracja podejrzenia duplikatu; Eksport raportu kontroli.
+* **Dalej:** Kontrola biletu w trybie offline; Skanowanie w trudnych warunkach oświetleniowych; Obsługa wielu typów ulg; Obsługa niepoprawnej ulgi; Historia ostatnich skanów.
 
 ## 2.4. Harmonogram prac
 ```mermaid
