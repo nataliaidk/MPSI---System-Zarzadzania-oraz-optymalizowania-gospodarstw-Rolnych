@@ -628,19 +628,8 @@ Przewoźnik
 - **Sukces:** Raport sprzedaży i/lub kontroli biletów zostaje wygenerowany dla wskazanego zakresu dat i może zostać pobrany w formacie CSV lub PDF.
 - **Błąd:** Raport nie zostaje wygenerowany albo nie może zostać pobrany; system informuje przewoźnika o przyczynie problemu.
 ---
-## 1.3. Priorytety MVP
-
-Przypadki użycia oznaczone jako MVP (minimum dla pierwszego wdrożenia):
--  UC-1: 
--  UC-2: 
-Pozostałe przypadki użycia powinny być zrealizowane w kolejnych iteracjach projektu,
-zgodnie z priorytetami ustalonymi z klientem:
--  UC-3: 
-- UC-4: 
-- UC-5: 
----
 # 2. Opis systemu
-
+## 2.1. WBS
 
 ## 2.1. WBS
 
