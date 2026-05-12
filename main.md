@@ -764,6 +764,7 @@ graph LR
     %% ==========================================
     WBS --> P4_TST["4. Testowanie i Jakość"]:::p3
     WBS --> P5_DEP["5. Wdrożenie i Szkolenia"]:::p3
+    WBS --> P6_SUP["6. Wsparcie i Utrzymanie"]:::p3
 
     %% --- 4. TESTY ---
     P4_TST --> P41["4.1 Testy Techniczne"]:::p3
