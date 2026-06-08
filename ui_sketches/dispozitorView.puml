@@ -1,0 +1,25 @@
+@startsalt
+{+
+  {* T | Panel Zarządzania - Dyspozytor }
+  {/ <b>Rozkład jazdy</b> | Zmiany i opóźnienia | Raporty ruchu }
+  {
+    <b>Zarządzanie rozkładem i utrudnieniami</b>
+    Trasa: | ^Wrocław - Warszawa^
+    Status: | ^Wszystkie^
+    [ Filtruj ]
+  }
+  ---
+  {#
+    <b>Pociąg</b> | <b>Trasa</b> | <b>Planowy odjazd</b> | <b>Status</b> | <b>Akcje</b>
+    EIP 1234 | WRO - WAW | 08:00 | Zgodnie z planem | [Dodaj opóźnienie] [Odwołaj]
+    IC 5678 | WRO - WAW | 09:15 | Opóźniony (15m) | [Zmień opóźnienie] [Odwołaj]
+  }
+  ---
+  <b>Dodaj nowy komunikat o utrudnieniach (Message Bus)</b>
+  {
+    Pociąg: | ^Wybierz...^
+    Wiadomość: | "Treść komunikatu dla pasażerów..."
+    [ Publikuj powiadomienie ]
+  }
+}
+@endsalt

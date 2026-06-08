@@ -1,0 +1,25 @@
+@startsalt
+{+
+  {* T | Panel Zarządzania - Mapa Ruchu }
+  {/ Rozkład jazdy | <b>Mapa Pociągów</b> | Komunikaty | Raporty }
+  {
+    <b>Filtry:</b>
+    Linia: | ^Wszystkie trasy^ | Status: | ^Tylko opóźnione^ | [ Odśwież mapę ]
+  }
+  ---
+  {+
+    <b>[ MAPA CZASU RZECZYWISTEGO (Train Data Source) ]</b>
+    .
+    ( WRO ) ----------- [> EIP 1234 (+15m)] ----------- ( WAW )
+    .
+    ( POZ ) ----------------------------------------- ( WAW )
+  }
+  ---
+  <b>Szczegóły wybranego pociągu: EIP 1234</b>
+  {
+    Prędkość: | 140 km/h | Opóźnienie: | 15 min 
+    Następna stacja: | Łódź Widzew | Przewidywany wjazd: | 10:45
+  }
+  [ Wyślij komunikat o utrudnieniach (Push) ]
+}
+@endsalt

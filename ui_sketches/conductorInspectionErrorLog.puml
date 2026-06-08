@@ -1,0 +1,25 @@
+@startsalt
+{+
+  {* T | Aplikacja Konduktora - Szczegóły Kontroli }
+  <b><color:red>WERYFIKACJA NEGATYWNA (BŁĄD)</color></b>
+  ---
+  <b>Szczegóły biletu:</b>
+  {
+    ID Biletu: | RT-998822
+    Odczytano: | 12:05:43
+    Błąd: | <b>Duplikat! Bilet zeskanowany o 10:15.</b>
+  }
+  ---
+  <b>Działania operacyjne:</b>
+  {
+    Wylegitymowano pasażera: | [X] Tak
+    Rodzaj dokumentu: | ^Dowód Osobisty^
+    Notatka (opcjonalnie): | "Pasażer twierdzi, że bilet wydrukował dwukrotnie..."
+  }
+  ---
+  <b>Rejestracja zdarzenia (Inspection DB):</b>
+  [ Wystaw opłatę dodatkową (Mandat) ]
+  [ Oznacz jako wyjaśnione / Pouczenie ]
+  [ Wróć do skanera ]
+}
+@endsalt

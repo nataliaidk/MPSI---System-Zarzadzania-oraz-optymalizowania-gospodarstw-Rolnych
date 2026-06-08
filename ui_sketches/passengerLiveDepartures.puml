@@ -1,0 +1,19 @@
+@startsalt
+{+
+  {* T | Aplikacja Pasażera - Tablica Odjazdów }
+  {
+    Stacja: | ^Wrocław Główny^ | [ Pokaż Przyjazdy ]
+  }
+  ---
+  <b>Aktualne odjazdy (Bieżący czas: 13:05)</b>
+  {#
+    <b>Godz.</b> | <b>Kierunek</b> | <b>Pociąg</b> | <b>Peron/Tor</b> | <b>Status</b>
+    13:10 | Poznań Gł. | IC 6500 | III / 5 | [Zgodnie z planem]
+    13:25 | Warszawa Centr. | EIP 1234 | I / 2 | [+15 min]
+    13:40 | Kraków Gł. | TLK 3810 | II / 4 | [Zgodnie z planem]
+    13:55 | Berlin Hbf | EC 40 | IV / 8 | [Zgodnie z planem]
+  }
+  ---
+  [ Odśwież dane ] | Ostatnia aktualizacja: 13:05:12
+}
+@endsalt

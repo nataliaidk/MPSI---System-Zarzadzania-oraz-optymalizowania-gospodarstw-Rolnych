@@ -1,0 +1,25 @@
+@startsalt
+{+
+  {* T | Aplikacja Pasażera - Centrum Alarmowe }
+  <b>Konfiguracja powiadomień dla kursu: EIP 1234 (Wrocław -> Warszawa)</b>
+  ---
+  {
+    [X] Chcę otrzymywać alerty o utrudnieniach i opóźnieniach dla tej podróży
+  }
+  <b>Wybierz kanały komunikacji:</b>
+  {
+    [X] Powiadomienia push w aplikacji mobilnej
+    [X] Wiadomość SMS na numer podany w profilu
+    [ ] Powiadomienia e-mail
+  }
+  ---
+  <b>Próg raportowania opóźnień (Disruption Service):</b>
+  {
+    ( ) Informuj o każdej zmianie rozkładowej
+    (O) Informuj tylko przy opóźnieniu pociągu powyżej 15 minut
+    ( ) Informuj tylko przy opóźnieniu pociągu powyżej 30 minut
+  }
+  ---
+  [ Zapisz ustawienia alertów ] | [ Anuluj ]
+}
+@endsalt

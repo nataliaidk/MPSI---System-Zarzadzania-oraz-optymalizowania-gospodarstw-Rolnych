@@ -1,0 +1,19 @@
+@startsalt
+{+
+  {* T | Aplikacja Konduktora - Log Skanowania }
+  {
+    <b>Tryb:</b> | <color:red>OFFLINE (Brak zasięgu)</color>
+    <b>Zsynchronizowano:</b> | 10 min temu
+  }
+  ---
+  <b>Ostatnio zeskanowane (Lokalna baza):</b>
+  {#
+    Godz. | Bilet ID | Pasażer | Status | Wynik
+    12:05 | RT-991 | J. Kowalski | WAŻNY | [ OK ]
+    12:03 | RT-882 | A. Nowak | DUPLIKAT | [ ALERT ]
+    12:00 | RT-773 | M. Wisła | WAŻNY | [ OK ]
+  }
+  ---
+  [ Wymuś synchronizację ] | [ Raport zmianowy ]
+}
+@endsalt

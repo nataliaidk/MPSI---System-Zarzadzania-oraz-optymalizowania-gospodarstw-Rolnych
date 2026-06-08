@@ -1,0 +1,29 @@
+@startsalt
+{+
+  {* T | Wybór Miejsca - Wagon 03 (Bezprzedziałowy) }
+  {
+    <b>Relacja:</b> | Wrocław Gł. -> Warszawa Centr. | <b>Pociąg:</b> | EIP 1234
+  }
+  ---
+  <b>Wybierz miejsce z planu wagonu:</b>
+  {
+    (O) Wolne | (X) Zajęte | (V) Twój wybór
+  }
+  ---
+  {#
+    . | <b>Okno</b> | <b>Korytarz</b> | " Przejście " | <b>Korytarz</b> | <b>Okno</b>
+    <b>Rząd 1</b> | [ 41 ] | [ 43 ] | "           " | [ 44 ] | [ 46 ]
+    <b>Rząd 2</b> | [ 31 ] | [  X ] | "           " | [ 34 ] | [  X ]
+    <b>Rząd 3</b> | [ 21 ] | [  V ] | "           " | [ 24 ] | [ 26 ]
+    <b>Rząd 4</b> | [  X ] | [  X ] | "           " | [ 14 ] | [ 16 ]
+    --- | --- | --- | --- | --- | ---
+    . | [ Bagaż ] | [ Bagaż ] | "           " | [ WC ] | [ WC ]
+  }
+  ---
+  {
+    Wybrane miejsce: | <b>23 (Korytarz, Rząd 3)</b>
+    Do zapłaty: | <b>150,00 PLN</b>
+    [ Zatwierdź i przejdź do płatności ] | [ Anuluj ]
+  }
+}
+@endsalt

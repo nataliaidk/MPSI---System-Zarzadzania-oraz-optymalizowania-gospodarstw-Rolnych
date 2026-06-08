@@ -1,0 +1,22 @@
+@startsalt
+{+
+  {* T | Panel Managera - Statystyki Sprzedaży }
+  {
+    Okres: | ^Ostatnie 30 dni^ | Trasa: | ^Wszystkie^ | [ Generuj Raport ]
+  }
+  ---
+  <b>Kluczowe wskaźniki (KPI):</b>
+  {
+    Sprzedane bilety: | 12,450 | Przychód netto: | 450,200 PLN
+    Średnie obłożenie: | 78% | Liczba reklamacji: | 12
+  }
+  ---
+  <b>Najpopularniejsze relacje:</b>
+  {#
+    Relacja | Bilety | Wypełnienie | Trend
+    WRO - WAW | 5,200 | 92% | [ WZROST ]
+    POZ - WAW | 3,100 | 65% | [ STABILNY ]
+  }
+  [ Eksportuj do CSV ] | [ Eksportuj do PDF ]
+}
+@endsalt

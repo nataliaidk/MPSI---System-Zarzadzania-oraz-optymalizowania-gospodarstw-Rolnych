@@ -1,0 +1,15 @@
+@startsalt
+{+
+  {* T | Panel Przewoźnika - Cenniki i Oferty }
+  {/ Oferta | <b>Cenniki</b> | Składy | Promocje }
+  ---
+  <b>Definiowanie stawek dla Trasy: Wrocław - Warszawa</b>
+  {#
+    Typ biletu | Cena Bazowa | Ulga 37% | Ulga 51% | Akcje
+    Normalny | "150,00" | "94,50" | "73,50" | [Zapisz]
+    Student | "75,00" | "47,25" | "36,75" | [Zapisz]
+    Senior | "100,00" | "63,00" | "49,00" | [Zapisz]
+  }
+  [ + Dodaj nową kategorię ulgi ]
+}
+@endsalt

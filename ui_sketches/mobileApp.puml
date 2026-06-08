@@ -1,0 +1,22 @@
+@startsalt
+{+
+  {* T | Aplikacja Konduktora }
+  {
+    <b>Kontrola Biletów</b>
+    [ Skanuj kod QR (Aparat) ]
+    ---
+    <b>Wprowadź kod ręcznie:</b>
+    "                  " | [ Sprawdź ]
+  }
+  ---
+  <b>Wynik ostatniej kontroli (Inspection Service):</b>
+  {+
+    <b>Status:</b> | <color:green>WAŻNY</color>
+    <b>Pasażer:</b> | Jan Kowalski
+    <b>Relacja:</b> | Wrocław - Warszawa
+    <b>Wagon/Miejsce:</b> | 3 / 45
+  }
+  ---
+  [Historia kontroli] | [Raporty] | [Wyloguj]
+}
+@endsalt

@@ -1,0 +1,26 @@
+@startsalt
+{+
+  {* T | Aplikacja Pasażera - Dane Pasażerów }
+  {
+    <b>Wybrane miejsce: Wagon 03, Miejsce 23 (Korytarz)</b>
+    Proszę uzupełnić dane pasażerów dla wybranego połączenia.
+  }
+  ---
+  <b>Pasażer 1 (Główny użytkownik)</b>
+  {
+    Imię: | "Jan             "
+    Nazwisko: | "Kowalski        "
+    Typ ulgi: | ^Normalny^
+  }
+  ---
+  <b>Pasażer 2 (Współpasażer)</b>
+  {
+    Imię: | "Anna            "
+    Nazwisko: | "Nowak           "
+    Typ ulgi: | ^Student (51%)^
+    Nr legitymacji: | "S-12345         "
+  }
+  ---
+  [ Przejdź do podsumowania i płatności ] | [ Wróć do wyboru miejsc ]
+}
+@endsalt

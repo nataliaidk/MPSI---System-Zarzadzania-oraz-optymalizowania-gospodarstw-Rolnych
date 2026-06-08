@@ -1,0 +1,23 @@
+@startsalt
+{+
+  {* T | Panel Administratora - Zarządzanie Dostępem }
+  {/ <b>Konta Użytkowników</b> | Role i Uprawnienia | Logi logowania (OAuth 2.0) }
+  ---
+  <b>Dodaj nowego pracownika do systemu</b>
+  {
+    Imię: | "Jan             "
+    Nazwisko: | "Kowalski        "
+    E-mail: | "jan@railway.com "
+    Rola: | ^Konduktor^
+    Status: | (O) Aktywny | ( ) Zablokowany
+    [ Generuj hasło startowe i wyślij e-mail aktywacyjny ]
+  }
+  ---
+  <b>Lista systemowa (Filtrowana)</b>
+  {#
+    <b>ID Konta</b> | <b>Użytkownik</b> | <b>Rola</b> | <b>Akcje</b>
+    USR-101 | Jan Kowalski | Konduktor | [Zablokuj] [Reset Hasła]
+    USR-102 | Anna Nowak | Traffic Manager | [Zablokuj] [Reset Hasła]
+  }
+}
+@endsalt

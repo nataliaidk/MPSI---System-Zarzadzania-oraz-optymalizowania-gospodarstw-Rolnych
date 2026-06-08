@@ -1,0 +1,26 @@
+@startsalt
+{+
+  {* T | Twój Bilet - Kod QR }
+  {
+    <b>BILET NR: RT-998822</b>
+    Status: | <color:green>AKTYWNY</color>
+  }
+  ---
+  {
+    [       ]
+    [  QR   ]
+    [  CODE ]
+    [       ]
+  }
+  ---
+  <b>Szczegóły podróży:</b>
+  {
+    Data: | 2026-06-02
+    Trasa: | Wrocław Główny -> Warszawa Centralna
+    Godz: | 08:00 -> 11:30
+    Wagon: | 03 | Miejsce: | 23 (Okno)
+  }
+  ---
+  [ Pobierz PDF ] | [ Udostępnij ] | [ Dodaj do Apple/Google Wallet ]
+}
+@endsalt

@@ -1,0 +1,28 @@
+@startsalt
+{+
+  {* T | Aplikacja Konduktora - Kontrola Ulgi }
+  <b><color:orange>STATUS KONTROLI: ZNIŻKA / WYMAGANA WERYFIKACJA</color></b>
+  ---
+  <b>Dane z biletu pasażera:</b>
+  {
+    Imię i nazwisko: | Anna Nowak
+    Typ naliczonej zniżki: | <b>Student (51%)</b>
+    Wymagany dokument: | <color:blue><b>Ustawowa legitymacja studencka</b></color>
+  }
+  ---
+  {+
+    <b>Instrukcja operacyjna dla drużyny konduktorskiej:</b>
+    Sprawdź termin ważności fizycznego dokumentu / mLegitymacji
+    oraz zgodność danych osobowych z wyświetlonymi powyżej.
+  }
+  ---
+  <b>Decyzja konduktorska:</b>
+  {
+    [ Dokument POPRAWNY (Zatwierdź ważność biletu) ]
+    --
+    [ BRAK DOKUMENTU / NIEWAŻNY (Przejdź do nałożenia opłaty) ]
+  }
+  ---
+  [ Wróć do skanowania QR ]
+}
+@endsalt

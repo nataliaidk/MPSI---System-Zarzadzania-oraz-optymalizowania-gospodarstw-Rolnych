@@ -1,0 +1,18 @@
+@startsalt
+{+
+  {* T | Panel Zarządzania - Administrator }
+  {/ Zarządzanie systemem | <b>Konta Konduktorów</b> | Ustawienia integracji }
+  {
+    <b>Lista Konduktorów (Auth DB)</b>
+    Szukaj: | "          " | [ Szukaj ]
+    [ + Dodaj nowego konduktora ]
+  }
+  ---
+  {#
+    <b>ID</b> | <b>Imię i Nazwisko</b> | <b>Status konta</b> | <b>Akcje</b>
+    K-001 | Jan Nowak | Aktywne | [Edytuj] [Zablokuj]
+    K-002 | Anna Kowalska | Aktywne | [Edytuj] [Zablokuj]
+    K-003 | Piotr Wiśniewski | Zablokowane | [Edytuj] [Odblokuj]
+  }
+}
+@endsalt

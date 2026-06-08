@@ -1,0 +1,29 @@
+@startsalt
+{+
+  {* T | Panel Przewoźnika - Kreator Oferty }
+  {/ <b>Nowy Kurs</b> | Cenniki | Tabor }
+  ---
+  <b>Podstawowe dane kursu</b>
+  {
+    Numer pociągu: | "IC 82100   " | Relacja: | "Szczecin -> Przemyśl"
+    Data startu: | "2026-07-01 " | Ważny do: | "2026-12-10 "
+  }
+  ---
+  <b>Konfiguracja taboru (Seat Maps)</b>
+  {
+    Schemat: | ^EZT ED161 (Dart)^
+    Pula miejsc: | 352 (Zablokuj miejsca techniczne: [X])
+  }
+  ---
+  <b>Rozkład przystanków</b>
+  {#
+    Stacja | Przyjazd | Odjazd | Akcje
+    Szczecin Gł. | - | 08:00 | [Usuń]
+    Poznań Gł. | 10:15 | 10:20 | [Usuń]
+    Wrocław Gł. | 12:30 | 12:40 | [Usuń]
+  }
+  [ + Dodaj stację ]
+  ---
+  [ Zapisz i Publikuj Ofertę ] | [ Zapisz jako szkic ]
+}
+@endsalt

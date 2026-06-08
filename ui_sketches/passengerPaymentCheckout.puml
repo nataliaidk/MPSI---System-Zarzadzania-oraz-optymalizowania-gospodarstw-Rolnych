@@ -1,0 +1,24 @@
+@startsalt
+{+
+  {* T | System Płatności - Oczekiwanie na transakcję }
+  <b>Trwa przetwarzanie płatności...</b>
+  ---
+  {
+    Odbiorca: | <b>Railway Journey Management System</b>
+    Kwota do zapłaty: | <b>150,00 PLN</b>
+    Tytuł: | Rezerwacja nr #RES-88291
+  }
+  ---
+  <b>Wybierz metodę płatności (PayU):</b>
+  {
+    [ ( ) BLIK ] | [ (O) Karta Płatnicza ] | [ ( ) Szybki Przelew ]
+  }
+  {
+    Numer karty: | "4500 1234 5678 9012"
+    Ważność: | "12/28" | CVV: | "123"
+  }
+  ---
+  [ Opłać zamówienie (150,00 PLN) ]
+  [ Anuluj i wróć do koszyka ]
+}
+@endsalt

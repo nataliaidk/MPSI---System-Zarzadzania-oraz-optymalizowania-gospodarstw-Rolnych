@@ -1,0 +1,21 @@
+@startsalt
+{+
+  {* T | Panel Dyspozytora - Wykryto Konflikt Rozkładu! }
+  {
+    <b><color:red>BŁĄD ZAPISU: Zderzenie na szlaku!</color></b>
+    Trasa: | Wrocław - Opole | Odcinek: | Brzeg - Lewin Brzeski
+  }
+  ---
+  <b>Pociąg modyfikowany (Twój zaktualizowany rozkład):</b>
+  IC 5678 | Odjazd z Brzegu: 10:15 | Wjazd do Lewina: 10:25
+  ---
+  <b>Pociąg kolidujący (Obecny w systemie bazy Schedule DB):</b>
+  EIP 1234 | Odjazd z Brzegu: 10:20 | Wjazd do Lewina: 10:30
+  ---
+  <b>Wybierz akcję naprawczą:</b>
+  ( ) Oznacz IC 5678 jako oczekujący (Opóźnienie +10 min)
+  ( ) Oznacz EIP 1234 jako oczekujący (Wymaga zmiany rozkładu EIP)
+  ( ) Anuluj modyfikację rozkładu
+  [ Zatwierdź rozwiązanie ]
+}
+@endsalt

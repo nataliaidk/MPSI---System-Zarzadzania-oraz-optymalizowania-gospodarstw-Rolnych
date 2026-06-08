@@ -1,0 +1,22 @@
+@startsalt
+{+
+  {* T | Panel Pasażera - Moje Bilety i Zwroty }
+  {/ Trwające podróże | <b>Historia i zwroty</b> | Dane konta }
+  ---
+  <b>Bilet nr: RT-998822 (Zakończona)</b>
+  Relacja: Wrocław -> Warszawa | Data: 2026-05-10
+  Status: <color:gray>WYKORZYSTANY</color> | [ Pobierz fakturę ]
+  ---
+  <b>Bilet nr: RT-102938 (Nadchodząca)</b>
+  Relacja: Poznań -> Kraków | Data: 2026-06-15
+  Status: <color:green>AKTYWNY</color>
+  {
+    [ Pobierz bilet (PDF) ] | [ Pokaż kod QR ] | [ Zwróć bilet ]
+  }
+  ---
+  <b>Formularz zwrotu (Dla biletu RT-102938):</b>
+  Kwota do zwrotu: <b>120,00 PLN</b> (zgodnie z regulaminem przewoźnika)
+  Środki zostaną zwrócone w ciągu 3 dni roboczych przez PayU.
+  [ Potwierdź zwrot biletu ]
+}
+@endsalt

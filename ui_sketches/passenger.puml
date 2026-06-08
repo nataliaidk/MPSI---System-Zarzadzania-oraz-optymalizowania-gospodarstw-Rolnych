@@ -1,0 +1,21 @@
+@startsalt
+{+
+  {* T | Railway System - Panel Pasażera }
+  {
+    <b>Wyszukaj połączenie</b>
+    Skąd: | "Wrocław Główny  "
+    Dokąd: | "Warszawa Centralna"
+    Data: | "2026-06-02  "
+    [ Szukaj połączeń ]
+  }
+  ---
+  <b>Wyniki wyszukiwania</b>
+  {#
+    <b>Odjazd</b> | <b>Przyjazd</b> | <b>Czas</b> | <b>Status (Train Data)</b> | <b>Akcja</b>
+    08:00 | 11:30 | 3h 30m | [Zgodnie z planem] | [Kup bilet]
+    09:15 | 12:45 | 3h 30m | [+15 min opóźnienia] | [Kup bilet]
+  }
+  ---
+  [Moje bilety] | [Historia podróży] | [Wyloguj]
+}
+@endsalt
