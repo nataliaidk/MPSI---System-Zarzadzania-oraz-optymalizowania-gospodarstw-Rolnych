@@ -982,8 +982,51 @@ gantt
 * Urządzenia do skanowania kodów QR spełniają wymagania postawione w specyfikacji (norma IP67, weryfikacja w trudnych warunkach oświetleniowych, czas odczytu < 200 ms).
 * Wsparcie i utrzymanie obejmuje 24 miesiące po zakończeniu wdrożenia (Hypercare i bieżące poprawki).
 * Bufor na nieprzewidziane wydatki (10%) uwzględnia potencjalne ryzyka związane z m.in. zmianami w procesach u przewoźników, opóźnieniami integracji API oraz problemami z fizycznym montażem nadajników GPS w taborach o różnej konstrukcji.
-
-
-
-
-
+## 2.6 UI Mockupy
+Panel Administratora do zarządzania dostępem 
+```plantuml
+@startsalt
+{+
+  {* T | Panel Administratora - Zarządzanie Dostępem }
+  {/ <b>Konta Użytkowników</b> | Role i Uprawnienia | Logi logowania (OAuth 2.0) }
+  ---
+  <b>Dodaj nowego pracownika do systemu</b>
+  {
+    Imię: | "Jan             "
+    Nazwisko: | "Kowalski        "
+    E-mail: | "jan@railway.com "
+    Rola: | ^Konduktor^
+    Status: | (O) Aktywny | ( ) Zablokowany
+    [ Generuj hasło startowe i wyślij e-mail aktywacyjny ]
+  }
+  ---
+  <b>Lista systemowa (Filtrowana)</b>
+  {#
+    <b>ID Konta</b> | <b>Użytkownik</b> | <b>Rola</b> | <b>Akcje</b>
+    USR-101 | Jan Kowalski | Konduktor | [Zablokuj] [Reset Hasła]
+    USR-102 | Anna Nowak | Traffic Manager | [Zablokuj] [Reset Hasła]
+  }
+}
+@endsalt
+```
+Panel zarządzania administratora
+```plantuml
+@startsalt
+{+
+  {* T | Panel Zarządzania - Administrator }
+  {/ Zarządzanie systemem | <b>Konta Konduktorów</b> | Ustawienia integracji }
+  {
+    <b>Lista Konduktorów (Auth DB)</b>
+    Szukaj: | "          " | [ Szukaj ]
+    [ + Dodaj nowego konduktora ]
+  }
+  ---
+  {#
+    <b>ID</b> | <b>Imię i Nazwisko</b> | <b>Status konta</b> | <b>Akcje</b>
+    K-001 | Jan Nowak | Aktywne | [Edytuj] [Zablokuj]
+    K-002 | Anna Kowalska | Aktywne | [Edytuj] [Zablokuj]
+    K-003 | Piotr Wiśniewski | Zablokowane | [Edytuj] [Odblokuj]
+  }
+}
+@endsalt
+```
