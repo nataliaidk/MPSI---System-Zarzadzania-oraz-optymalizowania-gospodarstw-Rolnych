@@ -75,6 +75,38 @@ Stworzyć kompleksowy system zarządzania transportem pasażerskim, który umoż
 
 ### 1.2.1 Rozkład jazdy i planowanie podróży
 
+**Diagram przypadków użycia:**
+
+```plantuml
+@startuml
+left to right direction
+
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F8F8F8
+  BorderColor #555555
+  ArrowColor #333333
+}
+
+actor "Przewoźnik" as Przewoznik
+actor "Dyspozytor" as Dyspozytor
+actor "System centralny" as SystemCentralny
+
+rectangle "Rozkład jazdy i planowanie podróży" {
+  usecase "UC-01\nEdycja rozkładu jazdy" as UC01
+  usecase "Weryfikacja konfliktów\nczasowych" as Konflikty
+  usecase "Publikacja aktualizacji\ndla pasażerów" as Publikacja
+}
+
+Przewoznik --> UC01
+Dyspozytor --> UC01
+UC01 .> Konflikty : <<include>>
+UC01 .> Publikacja : <<include>>
+UC01 --> SystemCentralny : zapis zmian
+Publikacja --> SystemCentralny : aktualny rozkład
+@enduml
+```
+
 #### UC-01: Edycja rozkładu jazdy
 
 **Powiązana historia użytkownika:**  
@@ -125,6 +157,43 @@ Przewoźnik / Dyspozytor
 ---
 
 ### 1.2.2 Sprzedaż biletów i rezerwacja miejsc
+
+**Diagram przypadków użycia:**
+
+```plantuml
+@startuml
+left to right direction
+
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F8F8F8
+  BorderColor #555555
+  ArrowColor #333333
+}
+
+actor "Pasażer" as Pasazer
+actor "Przewoźnik" as Przewoznik
+actor "Operator płatności" as OperatorPlatnosci
+actor "System centralny" as SystemCentralny
+
+rectangle "Sprzedaż biletów i rezerwacja miejsc" {
+  usecase "UC-02\nZakup biletu\nwielo-przewoźnikowego" as UC02
+  usecase "UC-03\nWybór i rezerwacja miejsca\nna planie wagonu" as UC03
+  usecase "UC-04\nZarządzanie ofertą\nprzewozową" as UC04
+  usecase "Generowanie biletu\nQR/PDF" as GenerowanieBiletu
+}
+
+Pasazer --> UC02
+Pasazer --> UC03
+Przewoznik --> UC04
+UC02 .> UC03 : <<extend>>\nwybór miejsca
+UC02 .> GenerowanieBiletu : <<include>>
+UC02 --> OperatorPlatnosci : autoryzacja płatności
+UC02 --> SystemCentralny : zapis zamówienia
+UC03 --> SystemCentralny : blokada miejsca
+UC04 --> SystemCentralny : publikacja oferty
+@enduml
+```
 
 #### UC-02: Zakup biletu wielo-przewoźnikowego
 
@@ -280,6 +349,45 @@ Przewoźnik
 
 ### 1.2.3 Informacje o opóźnieniach
 
+**Diagram przypadków użycia:**
+
+```plantuml
+@startuml
+left to right direction
+
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F8F8F8
+  BorderColor #555555
+  ArrowColor #333333
+}
+
+actor "Pasażer" as Pasazer
+actor "Dyspozytor" as Dyspozytor
+actor "System pozycjonowania" as SystemPozycjonowania
+actor "Tablice informacyjne" as TabliceInformacyjne
+actor "System centralny" as SystemCentralny
+
+rectangle "Informacje o opóźnieniach" {
+  usecase "UC-05\nOtrzymanie powiadomienia\no opóźnieniu" as UC05
+  usecase "UC-06\nMonitorowanie geolokalizacji\npociągów na mapie" as UC06
+  usecase "UC-07\nWprowadzenie awarii\ni komunikatów specjalnych" as UC07
+  usecase "Wyliczenie ETA\ni wielkości opóźnienia" as ETA
+}
+
+Pasazer --> UC05
+Dyspozytor --> UC06
+Dyspozytor --> UC07
+UC05 .> ETA : <<include>>
+UC06 --> SystemPozycjonowania : dane GPS/GSM
+UC06 --> SystemCentralny : status kursu
+UC07 .> UC05 : <<include>>\npowiadomienie pasażerów
+UC07 --> TabliceInformacyjne : publikacja komunikatu
+UC07 --> SystemCentralny : zapis komunikatu
+ETA --> SystemCentralny : rozkład i pozycja
+@enduml
+```
+
 #### UC-05: Otrzymanie powiadomienia o opóźnieniu
 
 **Powiązana historia użytkownika:**  
@@ -417,6 +525,45 @@ Dyspozytor
 ---
 
 ### 1.2.4 Kontrola biletów
+
+**Diagram przypadków użycia:**
+
+```plantuml
+@startuml
+left to right direction
+
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F8F8F8
+  BorderColor #555555
+  ArrowColor #333333
+}
+
+actor "Kontroler" as Kontroler
+actor "Pasażer" as Pasazer
+actor "Przewoźnik" as Przewoznik
+actor "System centralny" as SystemCentralny
+
+rectangle "Kontrola biletów" {
+  usecase "UC-08\nSkanowanie kodu QR\nbiletu" as UC08
+  usecase "UC-09\nWyświetlenie statusu\nbiletu" as UC09
+  usecase "UC-10\nGenerowanie raportów\nsprzedaży i kontroli" as UC10
+  usecase "Rejestracja incydentu\nlub duplikatu" as Incydent
+  usecase "Praca offline\nz lokalną bazą" as Offline
+}
+
+Kontroler --> UC08
+Kontroler --> UC09
+Pasazer --> UC08 : okazuje bilet
+Przewoznik --> UC10
+UC08 .> UC09 : <<include>>
+UC08 .> Offline : <<extend>>\nbrak łączności
+UC09 .> Incydent : <<extend>>\nbilet nieważny
+UC09 --> SystemCentralny : zapis historii skanowania
+UC10 .> UC08 : <<include>>\ndane kontroli
+UC10 --> SystemCentralny : dane raportowe
+@enduml
+```
 
 #### UC-08: Skanowanie kodu QR biletu
 
