@@ -1009,6 +1009,7 @@ Panel Administratora do zarządzania dostępem
 }
 @endsalt
 ```
+
 Panel zarządzania administratora
 ```plantuml
 @startsalt
@@ -1027,6 +1028,501 @@ Panel zarządzania administratora
     K-002 | Anna Kowalska | Aktywne | [Edytuj] [Zablokuj]
     K-003 | Piotr Wiśniewski | Zablokowane | [Edytuj] [Odblokuj]
   }
+}
+@endsalt
+```
+
+Panel pasażera - wyszukiwanie połączeń
+```plantuml
+@startsalt
+{+
+  {* T | Railway System - Panel Pasażera }
+  {
+    <b>Wyszukaj połączenie</b>
+    Skąd: | "Wrocław Główny  "
+    Dokąd: | "Warszawa Centralna"
+    Data: | "2026-06-02  "
+    [ Szukaj połączeń ]
+  }
+  ---
+  <b>Wyniki wyszukiwania</b>
+  {#
+    <b>Odjazd</b> | <b>Przyjazd</b> | <b>Czas</b> | <b>Status (Train Data)</b> | <b>Akcja</b>
+    08:00 | 11:30 | 3h 30m | [Zgodnie z planem] | [Kup bilet]
+    09:15 | 12:45 | 3h 30m | [+15 min opóźnienia] | [Kup bilet]
+  }
+  ---
+  [Moje bilety] | [Historia podróży] | [Wyloguj]
+}
+@endsalt
+```
+
+Panel dyspozytora - zarządzanie rozkładem
+```plantuml
+@startsalt
+{+
+  {* T | Panel Zarządzania - Dyspozytor }
+  {/ <b>Rozkład jazdy</b> | Zmiany i opóźnienia | Raporty ruchu }
+  {
+    <b>Zarządzanie rozkładem i utrudnieniami</b>
+    Trasa: | ^Wrocław - Warszawa^
+    Status: | ^Wszystkie^
+    [ Filtruj ]
+  }
+  ---
+  {#
+    <b>Pociąg</b> | <b>Trasa</b> | <b>Planowy odjazd</b> | <b>Status</b> | <b>Akcje</b>
+    EIP 1234 | WRO - WAW | 08:00 | Zgodnie z planem | [Dodaj opóźnienie] [Odwołaj]
+    IC 5678 | WRO - WAW | 09:15 | Opóźniony (15m) | [Zmień opóźnienie] [Odwołaj]
+  }
+  ---
+  <b>Dodaj nowy komunikat o utrudnieniach (Message Bus)</b>
+  {
+    Pociąg: | ^Wybierz...^
+    Wiadomość: | "Treść komunikatu dla pasażerów..."
+    [ Publikuj powiadomienie ]
+  }
+}
+@endsalt
+```
+
+Panel zarządzania - mapa ruchu
+```plantuml
+@startsalt
+{+
+  {* T | Panel Zarządzania - Mapa Ruchu }
+  {/ Rozkład jazdy | <b>Mapa Pociągów</b> | Komunikaty | Raporty }
+  {
+    <b>Filtry:</b>
+    Linia: | ^Wszystkie trasy^ | Status: | ^Tylko opóźnione^ | [ Odśwież mapę ]
+  }
+  ---
+  {+
+    <b>[ MAPA CZASU RZECZYWISTEGO (Train Data Source) ]</b>
+    .
+    ( WRO ) ----------- [> EIP 1234 (+15m)] ----------- ( WAW )
+    .
+    ( POZ ) ----------------------------------------- ( WAW )
+  }
+  ---
+  <b>Szczegóły wybranego pociągu: EIP 1234</b>
+  {
+    Prędkość: | 140 km/h | Opóźnienie: | 15 min 
+    Następna stacja: | Łódź Widzew | Przewidywany wjazd: | 10:45
+  }
+  [ Wyślij komunikat o utrudnieniach (Push) ]
+}
+@endsalt
+```
+
+Aplikacja pasażera - tablica odjazdów
+```plantuml
+@startsalt
+{+
+  {* T | Aplikacja Pasażera - Tablica Odjazdów }
+  {
+    Stacja: | ^Wrocław Główny^ | [ Pokaż Przyjazdy ]
+  }
+  ---
+  <b>Aktualne odjazdy (Bieżący czas: 13:05)</b>
+  {#
+    <b>Godz.</b> | <b>Kierunek</b> | <b>Pociąg</b> | <b>Peron/Tor</b> | <b>Status</b>
+    13:10 | Poznań Gł. | IC 6500 | III / 5 | [Zgodnie z planem]
+    13:25 | Warszawa Centr. | EIP 1234 | I / 2 | [+15 min]
+    13:40 | Kraków Gł. | TLK 3810 | II / 4 | [Zgodnie z planem]
+    13:55 | Berlin Hbf | EC 40 | IV / 8 | [Zgodnie z planem]
+  }
+  ---
+  [ Odśwież dane ] | Ostatnia aktualizacja: 13:05:12
+}
+@endsalt
+```
+
+Panel managera - statystyki sprzedaży
+```plantuml
+@startsalt
+{+
+  {* T | Panel Managera - Statystyki Sprzedaży }
+  {
+    Okres: | ^Ostatnie 30 dni^ | Trasa: | ^Wszystkie^ | [ Generuj Raport ]
+  }
+  ---
+  <b>Kluczowe wskaźniki (KPI):</b>
+  {
+    Sprzedane bilety: | 12,450 | Przychód netto: | 450,200 PLN
+    Średnie obłożenie: | 78% | Liczba reklamacji: | 12
+  }
+  ---
+  <b>Najpopularniejsze relacje:</b>
+  {#
+    Relacja | Bilety | Wypełnienie | Trend
+    WRO - WAW | 5,200 | 92% | [ WZROST ]
+    POZ - WAW | 3,100 | 65% | [ STABILNY ]
+  }
+  [ Eksportuj do CSV ] | [ Eksportuj do PDF ]
+}
+@endsalt
+```
+
+Wybór i rezerwacja miejsca
+```plantuml
+@startsalt
+{+
+  {* T | Wybór Miejsca - Wagon 03 (Bezprzedziałowy) }
+  {
+    <b>Relacja:</b> | Wrocław Gł. -> Warszawa Centr. | <b>Pociąg:</b> | EIP 1234
+  }
+  ---
+  <b>Wybierz miejsce z planu wagonu:</b>
+  {
+    (O) Wolne | (X) Zajęte | (V) Twój wybór
+  }
+  ---
+  {#
+    . | <b>Okno</b> | <b>Korytarz</b> | " Przejście " | <b>Korytarz</b> | <b>Okno</b>
+    <b>Rząd 1</b> | [ 41 ] | [ 43 ] | "           " | [ 44 ] | [ 46 ]
+    <b>Rząd 2</b> | [ 31 ] | [  X ] | "           " | [ 34 ] | [  X ]
+    <b>Rząd 3</b> | [ 21 ] | [  V ] | "           " | [ 24 ] | [ 26 ]
+    <b>Rząd 4</b> | [  X ] | [  X ] | "           " | [ 14 ] | [ 16 ]
+    --- | --- | --- | --- | --- | ---
+    . | [ Bagaż ] | [ Bagaż ] | "           " | [ WC ] | [ WC ]
+  }
+  ---
+  {
+    Wybrane miejsce: | <b>23 (Korytarz, Rząd 3)</b>
+    Do zapłaty: | <b>150,00 PLN</b>
+    [ Zatwierdź i przejdź do płatności ] | [ Anuluj ]
+  }
+}
+@endsalt
+```
+
+Aplikacja pasażera - dane pasażerów
+```plantuml
+@startsalt
+{+
+  {* T | Aplikacja Pasażera - Dane Pasażerów }
+  {
+    <b>Wybrane miejsce: Wagon 03, Miejsce 23 (Korytarz)</b>
+    Proszę uzupełnić dane pasażerów dla wybranego połączenia.
+  }
+  ---
+  <b>Pasażer 1 (Główny użytkownik)</b>
+  {
+    Imię: | "Jan             "
+    Nazwisko: | "Kowalski        "
+    Typ ulgi: | ^Normalny^
+  }
+  ---
+  <b>Pasażer 2 (Współpasażer)</b>
+  {
+    Imię: | "Anna            "
+    Nazwisko: | "Nowak           "
+    Typ ulgi: | ^Student (51%)^
+    Nr legitymacji: | "S-12345         "
+  }
+  ---
+  [ Przejdź do podsumowania i płatności ] | [ Wróć do wyboru miejsc ]
+}
+@endsalt
+```
+
+System płatności - checkout
+```plantuml
+@startsalt
+{+
+  {* T | System Płatności - Oczekiwanie na transakcję }
+  <b>Trwa przetwarzanie płatności...</b>
+  ---
+  {
+    Odbiorca: | <b>Railway Journey Management System</b>
+    Kwota do zapłaty: | <b>150,00 PLN</b>
+    Tytuł: | Rezerwacja nr #RES-88291
+  }
+  ---
+  <b>Wybierz metodę płatności (PayU):</b>
+  {
+    [ ( ) BLIK ] | [ (O) Karta Płatnicza ] | [ ( ) Szybki Przelew ]
+  }
+  {
+    Numer karty: | "4500 1234 5678 9012"
+    Ważność: | "12/28" | CVV: | "123"
+  }
+  ---
+  [ Opłać zamówienie (150,00 PLN) ]
+  [ Anuluj i wróć do koszyka ]
+}
+@endsalt
+```
+
+Aplikacja pasażera - bilet QR
+```plantuml
+@startsalt
+{+
+  {* T | Twój Bilet - Kod QR }
+  {
+    <b>BILET NR: RT-998822</b>
+    Status: | <color:green>AKTYWNY</color>
+  }
+  ---
+  {
+    [       ]
+    [  QR   ]
+    [  CODE ]
+    [       ]
+  }
+  ---
+  <b>Szczegóły podróży:</b>
+  {
+    Data: | 2026-06-02
+    Trasa: | Wrocław Główny -> Warszawa Centralna
+    Godz: | 08:00 -> 11:30
+    Wagon: | 03 | Miejsce: | 23 (Okno)
+  }
+  ---
+  [ Pobierz PDF ] | [ Udostępnij ] | [ Dodaj do Apple/Google Wallet ]
+}
+@endsalt
+```
+
+Panel pasażera - moje bilety i zwroty
+```plantuml
+@startsalt
+{+
+  {* T | Panel Pasażera - Moje Bilety i Zwroty }
+  {/ Trwające podróże | <b>Historia i zwroty</b> | Dane konta }
+  ---
+  <b>Bilet nr: RT-998822 (Zakończona)</b>
+  Relacja: Wrocław -> Warszawa | Data: 2026-05-10
+  Status: <color:gray>WYKORZYSTANY</color> | [ Pobierz fakturę ]
+  ---
+  <b>Bilet nr: RT-102938 (Nadchodząca)</b>
+  Relacja: Poznań -> Kraków | Data: 2026-06-15
+  Status: <color:green>AKTYWNY</color>
+  {
+    [ Pobierz bilet (PDF) ] | [ Pokaż kod QR ] | [ Zwróć bilet ]
+  }
+  ---
+  <b>Formularz zwrotu (Dla biletu RT-102938):</b>
+  Kwota do zwrotu: <b>120,00 PLN</b> (zgodnie z regulaminem przewoźnika)
+  Środki zostaną zwrócone w ciągu 3 dni roboczych przez PayU.
+  [ Potwierdź zwrot biletu ]
+}
+@endsalt
+```
+
+Aplikacja pasażera - centrum alarmowe
+```plantuml
+@startsalt
+{+
+  {* T | Aplikacja Pasażera - Centrum Alarmowe }
+  <b>Konfiguracja powiadomień dla kursu: EIP 1234 (Wrocław -> Warszawa)</b>
+  ---
+  {
+    [X] Chcę otrzymywać alerty o utrudnieniach i opóźnieniach dla tej podróży
+  }
+  <b>Wybierz kanały komunikacji:</b>
+  {
+    [X] Powiadomienia push w aplikacji mobilnej
+    [X] Wiadomość SMS na numer podany w profilu
+    [ ] Powiadomienia e-mail
+  }
+  ---
+  <b>Próg raportowania opóźnień (Disruption Service):</b>
+  {
+    ( ) Informuj o każdej zmianie rozkładowej
+    (O) Informuj tylko przy opóźnieniu pociągu powyżej 15 minut
+    ( ) Informuj tylko przy opóźnieniu pociągu powyżej 30 minut
+  }
+  ---
+  [ Zapisz ustawienia alertów ] | [ Anuluj ]
+}
+@endsalt
+```
+
+Panel przewoźnika - kreator oferty
+```plantuml
+@startsalt
+{+
+  {* T | Panel Przewoźnika - Kreator Oferty }
+  {/ <b>Nowy Kurs</b> | Cenniki | Tabor }
+  ---
+  <b>Podstawowe dane kursu</b>
+  {
+    Numer pociągu: | "IC 82100   " | Relacja: | "Szczecin -> Przemyśl"
+    Data startu: | "2026-07-01 " | Ważny do: | "2026-12-10 "
+  }
+  ---
+  <b>Konfiguracja taboru (Seat Maps)</b>
+  {
+    Schemat: | ^EZT ED161 (Dart)^
+    Pula miejsc: | 352 (Zablokuj miejsca techniczne: [X])
+  }
+  ---
+  <b>Rozkład przystanków</b>
+  {#
+    Stacja | Przyjazd | Odjazd | Akcje
+    Szczecin Gł. | - | 08:00 | [Usuń]
+    Poznań Gł. | 10:15 | 10:20 | [Usuń]
+    Wrocław Gł. | 12:30 | 12:40 | [Usuń]
+  }
+  [ + Dodaj stację ]
+  ---
+  [ Zapisz i Publikuj Ofertę ] | [ Zapisz jako szkic ]
+}
+@endsalt
+```
+
+Panel przewoźnika - cenniki i oferty
+```plantuml
+@startsalt
+{+
+  {* T | Panel Przewoźnika - Cenniki i Oferty }
+  {/ Oferta | <b>Cenniki</b> | Składy | Promocje }
+  ---
+  <b>Definiowanie stawek dla Trasy: Wrocław - Warszawa</b>
+  {#
+    Typ biletu | Cena Bazowa | Ulga 37% | Ulga 51% | Akcje
+    Normalny | "150,00" | "94,50" | "73,50" | [Zapisz]
+    Student | "75,00" | "47,25" | "36,75" | [Zapisz]
+    Senior | "100,00" | "63,00" | "49,00" | [Zapisz]
+  }
+  [ + Dodaj nową kategorię ulgi ]
+}
+@endsalt
+```
+
+Panel dyspozytora - konflikt rozkładu
+```plantuml
+@startsalt
+{+
+  {* T | Panel Dyspozytora - Wykryto Konflikt Rozkładu! }
+  {
+    <b><color:red>BŁĄD ZAPISU: Zderzenie na szlaku!</color></b>
+    Trasa: | Wrocław - Opole | Odcinek: | Brzeg - Lewin Brzeski
+  }
+  ---
+  <b>Pociąg modyfikowany (Twój zaktualizowany rozkład):</b>
+  IC 5678 | Odjazd z Brzegu: 10:15 | Wjazd do Lewina: 10:25
+  ---
+  <b>Pociąg kolidujący (Obecny w systemie bazy Schedule DB):</b>
+  EIP 1234 | Odjazd z Brzegu: 10:20 | Wjazd do Lewina: 10:30
+  ---
+  <b>Wybierz akcję naprawczą:</b>
+  ( ) Oznacz IC 5678 jako oczekujący (Opóźnienie +10 min)
+  ( ) Oznacz EIP 1234 jako oczekujący (Wymaga zmiany rozkładu EIP)
+  ( ) Anuluj modyfikację rozkładu
+  [ Zatwierdź rozwiązanie ]
+}
+@endsalt
+```
+
+Aplikacja konduktora - kontrola biletów
+```plantuml
+@startsalt
+{+
+  {* T | Aplikacja Konduktora }
+  {
+    <b>Kontrola Biletów</b>
+    [ Skanuj kod QR (Aparat) ]
+    ---
+    <b>Wprowadź kod ręcznie:</b>
+    "                  " | [ Sprawdź ]
+  }
+  ---
+  <b>Wynik ostatniej kontroli (Inspection Service):</b>
+  {+
+    <b>Status:</b> | <color:green>WAŻNY</color>
+    <b>Pasażer:</b> | Jan Kowalski
+    <b>Relacja:</b> | Wrocław - Warszawa
+    <b>Wagon/Miejsce:</b> | 3 / 45
+  }
+  ---
+  [Historia kontroli] | [Raporty] | [Wyloguj]
+}
+@endsalt
+```
+
+Aplikacja konduktora - log skanowania offline
+```plantuml
+@startsalt
+{+
+  {* T | Aplikacja Konduktora - Log Skanowania }
+  {
+    <b>Tryb:</b> | <color:red>OFFLINE (Brak zasięgu)</color>
+    <b>Zsynchronizowano:</b> | 10 min temu
+  }
+  ---
+  <b>Ostatnio zeskanowane (Lokalna baza):</b>
+  {#
+    Godz. | Bilet ID | Pasażer | Status | Wynik
+    12:05 | RT-991 | J. Kowalski | WAŻNY | [ OK ]
+    12:03 | RT-882 | A. Nowak | DUPLIKAT | [ ALERT ]
+    12:00 | RT-773 | M. Wisła | WAŻNY | [ OK ]
+  }
+  ---
+  [ Wymuś synchronizację ] | [ Raport zmianowy ]
+}
+@endsalt
+```
+
+Aplikacja konduktora - szczegóły błędu kontroli
+```plantuml
+@startsalt
+{+
+  {* T | Aplikacja Konduktora - Szczegóły Kontroli }
+  <b><color:red>WERYFIKACJA NEGATYWNA (BŁĄD)</color></b>
+  ---
+  <b>Szczegóły biletu:</b>
+  {
+    ID Biletu: | RT-998822
+    Odczytano: | 12:05:43
+    Błąd: | <b>Duplikat! Bilet zeskanowany o 10:15.</b>
+  }
+  ---
+  <b>Działania operacyjne:</b>
+  {
+    Wylegitymowano pasażera: | [X] Tak
+    Rodzaj dokumentu: | ^Dowód Osobisty^
+    Notatka (opcjonalnie): | "Pasażer twierdzi, że bilet wydrukował dwukrotnie..."
+  }
+  ---
+  <b>Rejestracja zdarzenia (Inspection DB):</b>
+  [ Wystaw opłatę dodatkową (Mandat) ]
+  [ Oznacz jako wyjaśnione / Pouczenie ]
+  [ Wróć do skanera ]
+}
+@endsalt
+```
+
+Aplikacja konduktora - kontrola ulgi
+```plantuml
+@startsalt
+{+
+  {* T | Aplikacja Konduktora - Kontrola Ulgi }
+  <b><color:orange>STATUS KONTROLI: ZNIŻKA / WYMAGANA WERYFIKACJA</color></b>
+  ---
+  <b>Dane z biletu pasażera:</b>
+  {
+    Imię i nazwisko: | Anna Nowak
+    Typ naliczonej zniżki: | <b>Student (51%)</b>
+    Wymagany dokument: | <color:blue><b>Ustawowa legitymacja studencka</b></color>
+  }
+  ---
+  {+
+    <b>Instrukcja operacyjna dla drużyny konduktorskiej:</b>
+    Sprawdź termin ważności fizycznego dokumentu / mLegitymacji
+    oraz zgodność danych osobowych z wyświetlonymi powyżej.
+  }
+  ---
+  <b>Decyzja konduktorska:</b>
+  {
+    [ Dokument POPRAWNY (Zatwierdź ważność biletu) ]
+    --
+    [ BRAK DOKUMENTU / NIEWAŻNY (Przejdź do nałożenia opłaty) ]
+  }
+  ---
+  [ Wróć do skanowania QR ]
 }
 @endsalt
 ```
