@@ -1673,3 +1673,276 @@ Aplikacja konduktora - kontrola ulgi
 }
 @endsalt
 ```
+
+# 2.7 Ankieta Kano – System Zarządzania Transportem Pasażerskim i Pracowniczym
+
+Szanowni Państwo,
+Poniższa ankieta pomoże nam ocenić, które funkcje systemu są dla Państwa kluczowe, a które stanowią miły dodatek. Przy każdym z modułów prosimy o udzielenie **dwóch odpowiedzi**:
+1. **Pytanie funkcjonalne (Pozytywne):** Jak się czujesz, gdy dana funkcja **jest obecna** w systemie?
+2. **Pytanie dysfunkcjonalne (Negatywne):** Jak się czujesz, gdy danej funkcji **brakuje** w systemie?
+
+---
+
+### Instrukcja wyboru odpowiedzi (Skala Kano)
+Dla każdego pytania wybierz jedną z 5 opcji:
+* **A** – Bardzo mi się podoba (To dla mnie kluczowe/świetne)
+* **B** – Oczekuję tego (To dla mnie standard)
+* **C** – Jest mi to obojętne
+* **D** – Mogę z tym żyć (Nie przeszkadza mi to)
+* **E** – Bardzo mi się nie podoba (To niedopuszczalne)
+
+---
+
+## Moduł 1: Portal Zamówień i Sprzedaży
+
+## Funkcja 1: Składanie zamówień na transport przez portal webowy
+* **Pytanie funkcjonalne:** Jak byś się czuł, gdyby system umożliwiał składanie zamówień na jednorazowy transport pracowników przez intuicyjny portal webowy?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+* **Pytanie dysfunkcjonalne:** Jak byś się czuł, gdyby system NIE umożliwiał składania zamówień przez portal webowy (zamówienia tylko telefonicznie/mailowo)?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+
+## Funkcja 2: Zakup biletu wielo-przewoźnikowego w jednej transakcji (UC-02)
+* **Pytanie funkcjonalne:** Jak byś się czuł, gdyby system pozwalał na zakup jednego wspólnego biletu na trasę obsługiwaną przez różnych przewoźników w ramach jednej płatności?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+* **Pytanie dysfunkcjonalne:** Jak byś się czuł, gdyby system wymagał kupowania osobnych biletów u każdego przewoźnika dla podróży przesiadkowej?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+
+## Funkcja 3: Rezerwacja miejsca na graficznym planie pojazdu/wagonu (UC-03)
+* **Pytanie funkcjonalne:** Jak byś się czuł, gdyby interaktywny schemat pojazdu pozwalał na samodzielny wybór konkretnego fotela (okno, korytarz, stolik)?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+* **Pytanie dysfunkcjonalne:** Jak byś się czuł, gdyby system przydzielał miejsca wyłącznie automatycznie, bez wizualnej mapy pojazdu?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+
+---
+
+## Moduł 2: Zarządzanie Operacyjne i Rozkłady
+
+## Funkcja 4: Natychmiastowa edycja rozkładu jazdy online (UC-01)
+* **Pytanie funkcjonalne:** Jak byś się czuł, gdyby edycja rozkładu przez dyspozytora automatycznie weryfikowała konflikty czasowe i aktualizowała plan pasażerom w czasie poniżej 60 sekund?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+* **Pytanie dysfunkcjonalne:** Jak byś się czuł, gdyby zmiany w rozkładzie wymagały ręcznego sprawdzania konfliktów i aktualizowały się w systemie z dużym opóźnieniem?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+
+## Funkcja 5: Automatyczne alerty o opóźnieniach w czasie rzeczywistym (UC-05)
+* **Pytanie funkcjonalne:** Jak byś się czuł, gdyby system automatycznie wysyłał powiadomienia Push/SMS o opóźnieniach bezpośrednio do pasażerów przypisanych do danego kursu?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+* **Pytanie dysfunkcjonalne:** Jak byś się czuł, gdyby pasażer musiał sam stale sprawdzać status tablicy odjazdów, aby dowiedzieć się o opóźnieniu pociągu/autobusu?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+
+## Funkcja 6: Monitorowanie floty na żywo na mapie GPS (UC-06)
+* **Pytanie funkcjonalne:** Jak byś się czuł, gdyby panel dyspozytora wyświetlał pozycję GPS wszystkich pojazdów na mapie w czasie rzeczywistym z odświeżaniem co 60 sekund?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+* **Pytanie dysfunkcjonalne:** Jak byś się czuł, gdyby system nie posiadał mapy geolokalizacyjnej, a status pozycji pojazdu opierał się tylko na meldunkach ze stacji?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+
+---
+
+## Moduł 3: Kontrola i Raportowanie
+
+## Funkcja 7: Błyskawiczne skanowanie kodów QR w trybie Offline (UC-08 / UC-09)
+* **Pytanie funkcjonalne:** Jak byś się czuł, gdyby aplikacja kontrolera weryfikowała bilet (status ważny/nieważny/duplikat) w czasie poniżej 200 ms, działając w pełni bez zasięgu sieci (Offline)?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+* **Pytanie dysfunkcjonalne:** Jak byś się czuł, gdyby brak zasięgu internetu w smartfonie/terminalu całkowicie uniemożliwiał weryfikację kodu QR pasażera?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+
+## Funkcja 8: Automatyczne raporty sprzedaży i kontroli (BI) (UC-10)
+* **Pytanie funkcjonalne:** Jak byś się czuł, gdyby system generował zaawansowane raporty obciążenia ruchu, przychodów i statystyk kontroli do plików CSV/PDF w kilka sekund?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+* **Pytanie dysfunkcjonalne:** Jak byś się czuł, gdyby przygotowanie raportu z kontroli i sprzedaży wymagało ręcznego łączenia baz danych lub trwało powyżej minuty?
+  - [ ] A | [ ] B | [ ] C | [ ] D | [ ] E
+
+---
+
+## Metryka Ewaluacji Wyników (Dla analityka)
+Do interpretacji odpowiedzi z powyższej ankiety wykorzystaj poniższą macierz Kano:
+
+| Pytanie Funkcjonalne \ Dysfunkcjonalne | A (Nie podoba się) | B (Mogę żyć) | C (Obojętne) | D (Oczekuję) | E (Podoba się) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **A (Podoba się)** | Kwestionowane (Q) | Atrakcyjne (A) | Atrakcyjne (A) | Atrakcyjne (A) | Jednowymiarowe (O) |
+| **B (Oczekuję)** | Odwrotne (R) | Obojętne (I) | Obojętne (I) | Obojętne (I) | Obowiązkowe (M) |
+| **C (Obojętne)** | Odwrotne (R) | Obojętne (I) | Obojętne (I) | Obojętne (I) | Odwrotne (R) |
+| **D (Mogę żyć)** | Odwrotne (R) | Obojętne (I) | Obojętne (I) | Obojętne (I) | Odwrotne (R) |
+| **E (Nie podoba się)** | Odwrotne (R) | Odwrotne (R) | Odwrotne (R) | Odwrotne (R) | Kwestionowane (Q) |
+
+*Oznaczenia: **M** - Must-be (Obowiązkowe), **O** - One-dimensional (Jednowymiarowe/Im lepiej, tym lepiej), **A** - Attractive (Atrakcyjne), **I** - Indifferent (Obojętne), **R** - Reverse (Odwrotne), **Q** - Questionable (Kwestionowane).*
+
+# Raport z Badania Kano – System Zarządzania Transportem
+
+Dziękujemy za udział w ankiecie! Państwa odpowiedzi pomogą nam w określeniu priorytetów rozwoju systemu i dostarczeniu rozwiązania najlepiej odpowiadającego Państwa potrzebom.
+
+### Skala odpowiedzi dla każdego pytania
+* **1** – Podoba mi się to
+* **2** – Tak powinno być
+* **3** – Jestem neutralny
+* **4** – Mogę z tym żyć
+* **5** – Nie podoba mi się to
+
+---
+
+## 1. Zbiorcza Tabela Odpowiedzi Użytkowników
+
+Poniższa tabela przedstawia surowe dane zebrane od 10 kluczowych użytkowników systemu dla 5 ocenianych funkcji ($F_x$). Litera **F** oznacza pytanie funkcjonalne (pozytywne), natomiast **D** oznacza pytanie dysfunkcjonalne (negatywne).
+
+| Użytkownik | Rola | F1F | F1D | F2F | F2D | F3F | F3D | F4F | F4D | F5F | F5D |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **U1** | Kontrahent | 1 | 5 | 2 | 4 | 1 | 1 | 3 | 3 | 4 | 5 |
+| **U2** | Koordynator | 2 | 5 | 1 | 5 | 2 | 4 | 1 | 4 | 1 | 5 |
+| **U3** | Kierowca | 1 | 4 | 2 | 5 | 5 | 2 | 2 | 4 | 2 | 4 |
+| **U4** | Kontrahent | 2 | 5 | 1 | 5 | 3 | 3 | 1 | 5 | 1 | 5 |
+| **U5** | Administrator | 1 | 5 | 2 | 4 | 5 | 5 | 2 | 4 | 3 | 3 |
+| **U6** | Koordynator | 2 | 4 | 1 | 5 | 1 | 4 | 1 | 5 | 2 | 5 |
+| **U7** | Kontrahent | 1 | 5 | 3 | 3 | 2 | 5 | 4 | 2 | 1 | 4 |
+| **U8** | Kierowca | 4 | 2 | 2 | 5 | 4 | 3 | 3 | 3 | 4 | 2 |
+| **U9** | Kontrahent | 1 | 5 | 1 | 5 | 4 | 1 | 1 | 5 | 1 | 5 |
+| **U10** | Koordynator | 2 | 5 | 2 | 4 | 3 | 4 | 2 | 4 | 2 | 4 |
+
+---
+
+## 2. Klasyfikacja Wyników według Tabeli Ewaluacyjnej
+
+### Funkcja 1: Portal webowy do zamówień
+* **Rozkład:** Performance (40%), Must-be (30%), Indifferent (20%), Attractive (10%)
+
+| Użytkownik | Funkcjonalne | Dysfunkcjonalne | Klasyfikacja |
+| :--- | :---: | :---: | :--- |
+| **U1** | 1 | 5 | Performance |
+| **U2** | 2 | 5 | Must-be |
+| **U3** | 1 | 4 | Attractive |
+| **U4** | 2 | 5 | Must-be |
+| **U5** | 1 | 5 | Performance |
+| **U6** | 2 | 4 | Indifferent |
+| **U7** | 1 | 5 | Performance |
+| **U8** | 4 | 2 | Indifferent |
+| **U9** | 1 | 5 | Performance |
+| **U10** | 2 | 5 | Must-be |
+
+### Funkcja 2: Automatyczne przydzielanie zasobów
+* **Rozkład:** Performance (40%), Indifferent (40%), Must-be (20%)
+
+| Użytkownik | Funkcjonalne | Dysfunkcjonalne | Klasyfikacja |
+| :--- | :---: | :---: | :--- |
+| **U1** | 2 | 4 | Indifferent |
+| **U2** | 1 | 5 | Performance |
+| **U3** | 2 | 5 | Must-be |
+| **U4** | 1 | 5 | Performance |
+| **U5** | 2 | 4 | Indifferent |
+| **U6** | 1 | 5 | Performance |
+| **U7** | 3 | 3 | Indifferent |
+| **U8** | 2 | 5 | Must-be |
+| **U9** | 1 | 5 | Performance |
+| **U10** | 2 | 4 | Indifferent |
+
+### Funkcja 3: Zapisywanie adresów
+* **Rozkład:** Indifferent (40%), Questionable (20%), Reverse (20%), Attractive (10%), Must-be (10%)
+
+| Użytkownik | Funkcjonalne | Dysfunkcjonalne | Klasyfikacja |
+| :--- | :---: | :---: | :--- |
+| **U1** | 1 | 1 | Questionable |
+| **U2** | 2 | 4 | Indifferent |
+| **U3** | 5 | 2 | Reverse |
+| **U4** | 3 | 3 | Indifferent |
+| **U5** | 5 | 5 | Questionable |
+| **U6** | 1 | 4 | Attractive |
+| **U7** | 2 | 5 | Must-be |
+| **U8** | 4 | 3 | Indifferent |
+| **U9** | 4 | 1 | Reverse |
+| **U10** | 3 | 4 | Indifferent |
+
+### Funkcja 4: Powiadomienia o potwierdzeniu
+* **Rozkład:** Indifferent (60%), Performance (30%), Attractive (10%)
+
+| Użytkownik | Funkcjonalne | Dysfunkcjonalne | Klasyfikacja |
+| :--- | :---: | :---: | :--- |
+| **U1** | 3 | 3 | Indifferent |
+| **U2** | 1 | 4 | Attractive |
+| **U3** | 2 | 4 | Indifferent |
+| **U4** | 1 | 5 | Performance |
+| **U5** | 2 | 4 | Indifferent |
+| **U6** | 1 | 5 | Performance |
+| **U7** | 4 | 2 | Indifferent |
+| **U8** | 3 | 3 | Indifferent |
+| **U9** | 1 | 5 | Performance |
+| **U10** | 2 | 4 | Indifferent |
+
+### Funkcja 5: Widok kalendarza
+* **Rozkład:** Indifferent (40%), Performance (30%), Must-be (20%), Attractive (10%)
+
+| Użytkownik | Funkcjonalne | Dysfunkcjonalne | Klasyfikacja |
+| :--- | :---: | :---: | :--- |
+| **U1** | 4 | 5 | Must-be |
+| **U2** | 1 | 5 | Performance |
+| **U3** | 2 | 4 | Indifferent |
+| **U4** | 1 | 5 | Performance |
+| **U5** | 3 | 3 | Indifferent |
+| **U6** | 2 | 5 | Must-be |
+| **U7** | 1 | 4 | Attractive |
+| **U8** | 4 | 2 | Indifferent |
+| **U9** | 1 | 5 | Performance |
+| **U10** | 2 | 4 | Indifferent |
+
+---
+
+## 3. Analiza Wskaźników Satysfakcji i Niezadowolenia
+
+### Formuły przeliczeniowe
+Do wyznaczenia poziomu wpływu cechy na użytkownika stosuje się następujące wzory (odpowiedzi *Questionable* oraz *Reverse* są pomijane w mianowniku, jako niedotyczące bezpośredniej skali satysfakcji):
+
+$$\text{Wskaźnik satysfakcji (SI)} = \frac{\text{Attractive} + \text{Performance}}{\text{Attractive} + \text{Performance} + \text{Must-be} + \text{Indifferent}}$$
+
+$$\text{Wskaźnik niezadowolenia (DI)} = -1 \cdot \left(\frac{\text{Must-be} + \text{Performance}}{\text{Attractive} + \text{Performance} + \text{Must-be} + \text{Indifferent}}\right)$$
+
+### Wyniki szczegółowe dla funkcjonalności:
+
+* **Funkcja 1: Portal webowy do zamówień**
+  * Statystyki: $A: 1, P: 4, M: 3, I: 2, R: 0, Q: 0$
+  * Wskaźnik satysfakcji: $(1+4) / (1+4+3+2) = 5/10 = 0.50$
+  * Wskaźnik niezadowolenia: $-(3+4) / (1+4+3+2) = -7/10 = -0.70$
+* **Funkcja 2: Automatyczne przydzielanie zasobów**
+  * Statystyki: $A: 0, P: 4, M: 2, I: 4, R: 0, Q: 0$
+  * Wskaźnik satysfakcji: $(0+4) / (0+4+2+4) = 4/10 = 0.40$
+  * Wskaźnik niezadowolenia: $-(2+4) / (0+4+2+4) = -6/10 = -0.60$
+* **Funkcja 3: Zapisywanie adresów**
+  * Statystyki: $A: 1, P: 0, M: 1, I: 4, R: 2, Q: 2$
+  * Wskaźnik satysfakcji: $(1+0) / (1+0+1+4) = 1/6 \approx 0.17$
+  * Wskaźnik niezadowolenia: $-(1+0) / (1+0+1+4) = -1/6 \approx -0.17$
+* **Funkcja 4: Powiadomienia o potwierdzeniu**
+  * Statystyki: $A: 1, P: 3, M: 0, I: 6, R: 0, Q: 0$
+  * Wskaźnik satysfakcji: $(1+3) / (1+3+0+6) = 4/10 = 0.40$
+  * Wskaźnik niezadowolenia: $-(0+3) / (1+3+0+6) = -3/10 = -0.30$
+* **Funkcja 5: Widok kalendarza**
+  * Statystyki: $A: 1, P: 3, M: 2, I: 4, R: 0, Q: 0$
+  * Wskaźnik satysfakcji: $(1+3) / (1+3+2+4) = 4/10 = 0.40$
+  * Wskaźnik niezadowolenia: $-(2+3) / (1+3+2+4) = -5/10 = -0.50$
+
+---
+
+## 4. Macierz Priorytetów i Wnioski
+
+Poniższy ranking wskazuje kolejność implementacji modułów systemu na podstawie uzyskanych współczynników.
+
+| Funkcja | Satysfakcja | Niezadowolenie | Priorytet |
+| :--- | :---: | :---: | :--- |
+| **F1: Portal webowy do zamówień** | 0.50 | -0.70 | **Bardzo wysoki** |
+| **F2: Automatyczne przydzielanie zasobów** | 0.40 | -0.60 | **Wysoki** |
+| **F5: Widok kalendarza** | 0.40 | -0.50 | **Średni** |
+| **F4: Powiadomienia o potwierdzeniu** | 0.40 | -0.30 | **Średni** |
+| **F3: Zapisywanie adresów** | 0.17 | -0.17 | **Niski** |
+
+---
+
+## Appendix: Tabela ewaluacyjna modelu Kano (Klucz klasyfikacji)
+
+| Pytanie Funkcjonalne \ Dysfunkcjonalne | 1. Podoba mi się | 2. Tak powinno być | 3. Neutralny | 4. Mogę z tym żyć | 5. Nie podoba mi się |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **1. Podoba mi się** | Q | A | A | A | P |
+| **2. Tak powinno być** | R | I | I | I | M |
+| **3. Neutralny** | R | I | I | I | M |
+| **4. Mogę z tym żyć** | R | I | I | I | M |
+| **5. Nie podoba mi się** | R | R | R | R | Q |
+
+* **A** (Attractive) – Atrakcyjne
+* **P** (Performance) – Wydajnościowe (Jednowymiarowe)
+* **M** (Must-be) – Obowiązkowe
+* **I** (Indifferent) – Obojętne
+* **R** (Reverse) – Odwrotne
+* **Q** (Questionable) – Wątpliwe / Wadliwe
