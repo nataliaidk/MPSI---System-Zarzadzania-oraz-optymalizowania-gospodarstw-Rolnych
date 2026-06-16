@@ -278,7 +278,7 @@ Przewoźnik
 
 ---
 
-### 4.2.3 Informacje o opóźnieniach
+### 1.2.3 Informacje o opóźnieniach
 
 #### UC-05: Otrzymanie powiadomienia o opóźnieniu
 
